@@ -15,7 +15,6 @@ namespace Orders.ApiControllers
         [HttpGet]
         public IEnumerable<string> Get()
         {
-            string k = 5;
             return new string[] { "value1", "value2" };
         }
 
