@@ -15,7 +15,6 @@ namespace Orders.ApiControllers
         [HttpGet]
         public IEnumerable<string> Get()
         {
-            string testValue = 4;
             return new string[] { "value1", "value2" };
         }
 
