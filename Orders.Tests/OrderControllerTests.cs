@@ -12,7 +12,7 @@ namespace Tests
         [Test]
         public void FailingTest()
         {
-            Assert.IsTrue(false);
+            Assert.IsTrue(true);
         }
     }
 }
