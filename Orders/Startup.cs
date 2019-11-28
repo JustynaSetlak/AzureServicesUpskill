@@ -9,6 +9,11 @@ using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Orders.Config;
+using Orders.Configuration;
+using Orders.Configuration.Interfaces;
+using Orders.Services;
+using Orders.Services.Interfaces;
 
 namespace Orders
 {
@@ -31,12 +36,15 @@ namespace Orders
                 options.MinimumSameSitePolicy = SameSiteMode.None;
             });
 
+            services.Configure<ProductsStorageConfig>(Configuration.GetSection(nameof(ProductsStorageConfig)));
+            services.AddScoped<IProductsStorageConfigurationService, ProductsStorageConfigurationService>();
+            services.AddScoped<ICategoryService, CategoryService>();
 
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env)
+        public void Configure(IApplicationBuilder app, IHostingEnvironment env, IProductsStorageConfigurationService productsStorageConfigurationService)
         {
             if (env.IsDevelopment())
             {
@@ -52,6 +60,8 @@ namespace Orders
             app.UseHttpsRedirection();
             app.UseStaticFiles();
             app.UseCookiePolicy();
+
+            productsStorageConfigurationService.CreateDatabaseIfNotExist();
 
             app.UseMvc(routes =>
             {
