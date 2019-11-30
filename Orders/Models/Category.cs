@@ -8,8 +8,6 @@ namespace Orders.Models
 {
     public class Category : TableEntity
     {
-        public int Id { get; set; }
-
         public string Name { get; set; }
 
         public string Description { get; set; }

@@ -1,19 +1,17 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Builder;
+﻿using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Orders.Config;
 using Orders.Configuration;
 using Orders.Configuration.Interfaces;
+using Orders.Repositories;
+using Orders.Repositories.Interfaces;
 using Orders.Services;
 using Orders.Services.Interfaces;
+using Swashbuckle.AspNetCore.Swagger;
 
 namespace Orders
 {
@@ -39,6 +37,12 @@ namespace Orders
             services.Configure<ProductsStorageConfig>(Configuration.GetSection(nameof(ProductsStorageConfig)));
             services.AddScoped<IProductsStorageConfigurationService, ProductsStorageConfigurationService>();
             services.AddScoped<ICategoryService, CategoryService>();
+            services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
+
+            services.AddSwaggerGen(c =>
+            {
+                c.SwaggerDoc("v1", new Info { Title = "My API", Version = "v1" });
+            });
 
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
         }
@@ -61,7 +65,13 @@ namespace Orders
             app.UseStaticFiles();
             app.UseCookiePolicy();
 
-            productsStorageConfigurationService.CreateDatabaseIfNotExist();
+            //productsStorageConfigurationService.CreateDatabaseIfNotExist();
+            app.UseSwagger();
+
+            app.UseSwaggerUI(c =>
+            {
+                c.SwaggerEndpoint("/swagger/v1/swagger.json", "My API V1");
+            });
 
             app.UseMvc(routes =>
             {

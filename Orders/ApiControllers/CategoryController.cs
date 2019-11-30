@@ -1,9 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Orders.Dtos;
 using Orders.Models;
 using Orders.Services.Interfaces;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace Orders.ApiControllers
@@ -19,10 +17,36 @@ namespace Orders.ApiControllers
             _categoryService = categoryService;
         }
 
-        [HttpPost()]
-        public async Task<ActionResult> Create([FromBody] Category categoryToAdd)
+        [HttpPost]
+        public async Task<ActionResult> Create([FromBody] CreateCategoryDto categoryToAdd)
         {
             var result = await _categoryService.InsertCategory(categoryToAdd);
+
+            if (!result)
+            {
+                return BadRequest();
+            }
+
+            return Ok();
+        }
+
+        [HttpPut]
+        public async Task<ActionResult> Update([FromBody] UpdateCategoryDto category)
+        {
+            var result = await _categoryService.UpdateDescription(category);
+
+            if (!result)
+            {
+                return BadRequest();
+            }
+
+            return Ok();
+        }
+
+        [HttpDelete]
+        public async Task<ActionResult> Delete(string partitionKey, string rowKey)
+        {
+            var result = await _categoryService.Delete(partitionKey, rowKey);
 
             if (!result)
             {
