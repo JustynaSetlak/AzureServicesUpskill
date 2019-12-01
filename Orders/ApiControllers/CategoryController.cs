@@ -1,6 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Orders.Dtos;
-using Orders.Models;
 using Orders.Services.Interfaces;
 using System.Threading.Tasks;
 
@@ -22,12 +21,25 @@ namespace Orders.ApiControllers
         {
             var result = await _categoryService.InsertCategory(categoryToAdd);
 
-            if (!result)
+            if (result.IsSuccessfull)
             {
                 return BadRequest();
             }
 
-            return Ok();
+            return Ok(result.Value);
+        }
+
+        [HttpGet("{id}")]
+        public async Task<ActionResult> Get(string id)
+        {
+            var result = await _categoryService.Get(id);
+
+            if (result.IsSuccessfull)
+            {
+                return BadRequest();
+            }
+
+            return Ok(result.Value);
         }
 
         [HttpPut]
@@ -43,10 +55,10 @@ namespace Orders.ApiControllers
             return Ok();
         }
 
-        [HttpDelete]
-        public async Task<ActionResult> Delete(string partitionKey, string rowKey)
+        [HttpDelete("{rowKey}")]
+        public async Task<ActionResult> Delete(string rowKey)
         {
-            var result = await _categoryService.Delete(partitionKey, rowKey);
+            var result = await _categoryService.Delete(rowKey);
 
             if (!result)
             {

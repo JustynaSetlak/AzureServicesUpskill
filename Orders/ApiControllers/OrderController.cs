@@ -4,13 +4,22 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Orders.Dtos.Order;
+using Orders.Services.Interfaces;
 
 namespace Orders.ApiControllers
 {
-    [Route("api/[controller]")]
+    [Route("api/order")]
     [ApiController]
     public class OrderController : ControllerBase
     {
+        private readonly IOrderService _orderService;
+
+        public OrderController(IOrderService orderService)
+        {
+            _orderService = orderService;
+        }
+
         // GET: api/Order
         [HttpGet]
         public IEnumerable<string> Get()
@@ -25,22 +34,12 @@ namespace Orders.ApiControllers
             return "value";
         }
 
-        // POST: api/Order
         [HttpPost]
-        public void Post([FromBody] string value)
+        public async Task<ActionResult> Post([FromBody] CreateOrderDto createOrderDto)
         {
-        }
+            await _orderService.CreateOrder(createOrderDto);
 
-        // PUT: api/Order/5
-        [HttpPut("{id}")]
-        public void Put(int id, [FromBody] string value)
-        {
-        }
-
-        // DELETE: api/ApiWithActions/5
-        [HttpDelete("{id}")]
-        public void Delete(int id)
-        {
+            return Accepted();
         }
     }
 }

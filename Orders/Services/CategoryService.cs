@@ -1,19 +1,16 @@
 ﻿using Microsoft.Azure.Cosmos.Table;
-using Microsoft.Extensions.Options;
-using Orders.Config;
 using Orders.Dtos;
 using Orders.Models;
 using Orders.Repositories.Interfaces;
+using Orders.Results;
 using Orders.Services.Interfaces;
 using System;
-using System.Net;
 using System.Threading.Tasks;
 
 namespace Orders.Services
 {
     public class CategoryService : ICategoryService
     {
-        private readonly CloudTable _categoryTable;
         private readonly IGenericRepository<Category> _categoryRepository;
 
         public CategoryService(IGenericRepository<Category> genericRepository)
@@ -21,39 +18,59 @@ namespace Orders.Services
             _categoryRepository = genericRepository;
         }
 
-        public async Task<bool> InsertCategory(CreateCategoryDto newCategory)
+        public async Task<Result<string>> InsertCategory(CreateCategoryDto newCategory)
         {
-            var newGuid = Guid.NewGuid().ToString();
+            var guidIdentificator = Guid.NewGuid().ToString();
 
             var category = new Category
             {
-                RowKey = newGuid,
-                PartitionKey = newGuid,
+                RowKey = guidIdentificator,
+                PartitionKey = nameof(Category),
                 Name = newCategory.Name,
                 Description = newCategory.Description
             };
 
-            var result = await _categoryRepository.Insert(category);
-            return result.HttpStatusCode == (int)HttpStatusCode.NoContent;
+            var insertResult = await _categoryRepository.Insert(category);
+            var result = new Result<string>(insertResult.IsSuccessfull, insertResult.Value.RowKey);
+
+            return result;
         }
 
         public async Task<bool> UpdateDescription(UpdateCategoryDto updateCategoryDto)
         {
-            var categoryToUpdate = await _categoryRepository.Get(updateCategoryDto.PartitionKey, updateCategoryDto.RowKey);
+            var getResult = await Get(updateCategoryDto.Id);
 
-            categoryToUpdate.Description = updateCategoryDto.Description;
+            if (getResult.IsSuccessfull)
+            {
+                return false;
+            }
 
-            var result = await _categoryRepository.Replace(categoryToUpdate);
+            getResult.Value.Description = updateCategoryDto.Description;
 
-            return result.HttpStatusCode == (int)HttpStatusCode.NoContent;
+            var result = await _categoryRepository.Replace(getResult.Value);
+
+            return result.IsSuccessfull;
         }
 
-        public async Task<bool> Delete(string partitionKey, string rowKey)
+        public async Task<bool> Delete(string id)
         {
-            var categoryToDelete = await _categoryRepository.Get(partitionKey, rowKey);
-            var result = await _categoryRepository.Delete(categoryToDelete);
+            var getResult = await Get(id);
 
-            return result.HttpStatusCode == (int)HttpStatusCode.NoContent;
+            if (!getResult.IsSuccessfull)
+            {
+                return false;
+            }
+
+            var result = await _categoryRepository.Delete(getResult.Value);
+
+            return result.IsSuccessfull;
+        }
+
+        public async Task<Result<Category>> Get(string id)
+        {
+            var category = await _categoryRepository.Get(nameof(Category), id);
+
+            return category;
         }
     }
 }

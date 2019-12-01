@@ -2,6 +2,8 @@
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Azure.Documents;
+using Microsoft.Azure.Documents.Client;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Orders.Config;
@@ -12,6 +14,7 @@ using Orders.Repositories.Interfaces;
 using Orders.Services;
 using Orders.Services.Interfaces;
 using Swashbuckle.AspNetCore.Swagger;
+using System;
 
 namespace Orders
 {
@@ -35,9 +38,18 @@ namespace Orders
             });
 
             services.Configure<ProductsStorageConfig>(Configuration.GetSection(nameof(ProductsStorageConfig)));
+            services.Configure<OrdersDatabaseConfig>(Configuration.GetSection(nameof(OrdersDatabaseConfig)));
             services.AddScoped<IProductsStorageConfigurationService, ProductsStorageConfigurationService>();
             services.AddScoped<ICategoryService, CategoryService>();
             services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
+            services.AddScoped<IOrderService, OrderService>();
+            services.AddScoped<IOrderRepository, OrderRepository>();
+
+            var ordersDatabaseConfig = Configuration
+                .GetSection(nameof(OrdersDatabaseConfig))
+                .Get<OrdersDatabaseConfig>();
+
+            services.AddScoped<IDocumentClient>(x => new DocumentClient(new Uri(ordersDatabaseConfig.Url), ordersDatabaseConfig.Key));
 
             services.AddSwaggerGen(c =>
             {
@@ -65,9 +77,9 @@ namespace Orders
             app.UseStaticFiles();
             app.UseCookiePolicy();
 
-            //productsStorageConfigurationService.CreateDatabaseIfNotExist();
-            app.UseSwagger();
+            productsStorageConfigurationService.CreateDatabaseIfNotExist().GetAwaiter().GetResult();
 
+            app.UseSwagger();
             app.UseSwaggerUI(c =>
             {
                 c.SwaggerEndpoint("/swagger/v1/swagger.json", "My API V1");

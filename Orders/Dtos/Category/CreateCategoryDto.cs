@@ -1,4 +1,5 @@
-﻿namespace Orders.Dtos
+﻿
+namespace Orders.Dtos
 {
     public class CreateCategoryDto
     {
