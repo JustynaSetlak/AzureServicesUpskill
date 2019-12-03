@@ -4,7 +4,6 @@ using Microsoft.Azure.Documents.Client;
 using Microsoft.Extensions.Options;
 using Orders.Config;
 using Orders.Configuration.Interfaces;
-using System;
 using System.Threading.Tasks;
 
 namespace Orders.Configuration
@@ -24,8 +23,8 @@ namespace Orders.Configuration
 
         public async Task CreateDatabaseIfNotExist()
         {
-            await CreateProductsDatabaseIfNotxist();
-            await CreateOrdersDatabaseIfNotExist();
+            //await CreateProductsDatabaseIfNotxist();
+            //await CreateOrdersDatabaseIfNotExist();
         }
 
         private async Task CreateProductsDatabaseIfNotxist()

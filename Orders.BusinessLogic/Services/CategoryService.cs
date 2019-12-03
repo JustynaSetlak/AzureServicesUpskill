@@ -1,5 +1,4 @@
-﻿using Microsoft.Azure.Cosmos.Table;
-using Orders.Dtos;
+﻿using Orders.Dtos;
 using Orders.Models;
 using Orders.Repositories.Interfaces;
 using Orders.Results;
