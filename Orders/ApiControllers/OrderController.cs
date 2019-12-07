@@ -1,5 +1,7 @@
 ﻿using System.Collections.Generic;
+using System.IO;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Orders.Dtos.Order;
 using Orders.Services.Interfaces;
@@ -31,6 +33,27 @@ namespace Orders.ApiControllers
             await _orderService.CreateOrder(createOrderDto);
 
             return Accepted();
+        }
+
+        [HttpPost("upload/{id}")]
+        public async Task<ActionResult> Post(string id, IFormFile uploadedFile)
+        {
+            var isSuccessful = await _orderService.UploadOrderImage(id, uploadedFile.FileName, uploadedFile);
+
+            if (!isSuccessful)
+            {
+                return BadRequest();
+            }
+
+            return Ok();
+        }
+
+        [HttpDelete("removeImage/{orderId}")]
+        public async Task<ActionResult> DeleteImageUri(string orderId)
+        {
+            await _orderService.DeleteImage(orderId);
+
+            return NoContent();
         }
     }
 }

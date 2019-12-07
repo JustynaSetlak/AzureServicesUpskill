@@ -1,4 +1,5 @@
-﻿using Orders.Dtos.Order;
+﻿using Microsoft.AspNetCore.Http;
+using Orders.Dtos.Order;
 using System.Threading.Tasks;
 
 namespace Orders.Services.Interfaces
@@ -8,5 +9,9 @@ namespace Orders.Services.Interfaces
         Task CreateOrder(CreateOrderDto createOrderDto);
 
         Task<OrderDto> Get(string id);
+
+        Task<bool> UploadOrderImage(string id, string uploadedFileName, IFormFile uploadedFile);
+
+        Task DeleteImage(string orderId);
     }
 }

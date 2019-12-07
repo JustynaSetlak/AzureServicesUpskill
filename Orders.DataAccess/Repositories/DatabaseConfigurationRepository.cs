@@ -10,11 +10,11 @@ namespace Orders.DataAccess.Repositories
 {
     public class DatabaseConfigurationRepository : IDatabaseConfigurationRepository
     {
-        private readonly ProductsStorageConfig _productStorageConfigOptions;
+        private readonly ProductTableDbConfig _productStorageConfigOptions;
         private readonly OrdersDatabaseConfig _ordersDatabaseConfigOptions;
         private readonly IDocumentClient _documentClient;
 
-        public DatabaseConfigurationRepository(IDocumentClient documentClient, IOptions<ProductsStorageConfig> productStorageConfigOptions, IOptions<OrdersDatabaseConfig> ordersDatabaseConfigOptions)
+        public DatabaseConfigurationRepository(IDocumentClient documentClient, IOptions<ProductTableDbConfig> productStorageConfigOptions, IOptions<OrdersDatabaseConfig> ordersDatabaseConfigOptions)
         {
             _productStorageConfigOptions = productStorageConfigOptions.Value;
             _ordersDatabaseConfigOptions = ordersDatabaseConfigOptions.Value;
@@ -26,10 +26,10 @@ namespace Orders.DataAccess.Repositories
             var storageAccount = CloudStorageAccount.Parse(_productStorageConfigOptions.ConnectionString);
             var tableClient = storageAccount.CreateCloudTableClient();
 
-            var categoryTable = tableClient.GetTableReference(_productStorageConfigOptions.CategoryTable);
+            var categoryTable = tableClient.GetTableReference(_productStorageConfigOptions.CategoryTableName);
             await categoryTable.CreateIfNotExistsAsync();
 
-            var tagTable = tableClient.GetTableReference(_productStorageConfigOptions.TagTable);
+            var tagTable = tableClient.GetTableReference(_productStorageConfigOptions.TagTableName);
             await tagTable.CreateIfNotExistsAsync();
         }
 

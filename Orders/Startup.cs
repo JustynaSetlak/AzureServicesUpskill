@@ -7,6 +7,8 @@ using Microsoft.Azure.Documents;
 using Microsoft.Azure.Documents.Client;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Orders.BusinessLogic.Interfaces;
+using Orders.BusinessLogic.Services;
 using Orders.Config;
 using Orders.Configuration;
 using Orders.Configuration.Interfaces;
@@ -40,8 +42,10 @@ namespace Orders
                 options.MinimumSameSitePolicy = SameSiteMode.None;
             });
 
-            services.Configure<ProductsStorageConfig>(Configuration.GetSection(nameof(ProductsStorageConfig)));
+            services.Configure<ProductTableDbConfig>(Configuration.GetSection(nameof(ProductTableDbConfig)));
             services.Configure<OrdersDatabaseConfig>(Configuration.GetSection(nameof(OrdersDatabaseConfig)));
+            services.Configure<StorageConfig>(Configuration.GetSection(nameof(StorageConfig)));
+
             services.AddScoped<IDatabaseConfigurationService, DatabaseConfigurationService>();
             services.AddScoped<ICategoryService, CategoryService>();
             services.AddScoped<ITagService, TagService>();
@@ -49,6 +53,8 @@ namespace Orders
             services.AddScoped<IOrderService, OrderService>();
             services.AddScoped<IOrderRepository, OrderRepository>();
             services.AddScoped<IDatabaseConfigurationRepository, DatabaseConfigurationRepository>();
+            services.AddScoped<IBlobFileRepository, BlobFileRepository>();
+            services.AddScoped<IImageUploadService, ImageUploadService>();
 
             var ordersDatabaseConfig = Configuration
                 .GetSection(nameof(OrdersDatabaseConfig))
@@ -59,6 +65,7 @@ namespace Orders
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new Info { Title = "My API", Version = "v1" });
+                c.OperationFilter<FileUploadOperationConfig>();
             });
 
             services.AddAutoMapper(typeof(Startup));

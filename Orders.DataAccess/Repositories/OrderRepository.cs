@@ -5,6 +5,7 @@ using Orders.Config;
 using Orders.Models;
 using Orders.Repositories.Interfaces;
 using System;
+using System.Net;
 using System.Threading.Tasks;
 
 namespace Orders.Repositories
@@ -27,13 +28,30 @@ namespace Orders.Repositories
             await _documentClient.CreateDocumentAsync(_orderDocumentCollectionFactory, order);
         }
 
+        public async Task ReplaceDocument(Order order)
+        {
+            var documentUri = UriFactory.CreateDocumentUri(_ordersDatabaseConfig.DatabaseName, _ordersDatabaseConfig.OrdersCollectionName, order.Id);
+
+            await _documentClient.ReplaceDocumentAsync(documentUri, order);
+        }
+
         public async Task<Order> GetOrder(string documentId)
         {
-            var x = await _documentClient.ReadDocumentAsync<Order>(UriFactory.CreateDocumentUri(_ordersDatabaseConfig.DatabaseName, _ordersDatabaseConfig.OrdersCollectionName, documentId));
+            try
+            {
+                var result = await _documentClient.ReadDocumentAsync<Order>(UriFactory.CreateDocumentUri(_ordersDatabaseConfig.DatabaseName, _ordersDatabaseConfig.OrdersCollectionName, documentId));
 
-            var result = await _documentClient.ReadDocumentAsync<Order>(UriFactory.CreateDocumentUri(_ordersDatabaseConfig.DatabaseName, _ordersDatabaseConfig.OrdersCollectionName, documentId));
+                return result;
+            }
+            catch(DocumentClientException ex)
+            {
+                if (ex.StatusCode == HttpStatusCode.NotFound)
+                {
+                    return null;
+                }
 
-            return result;
+                throw;
+            }
         }
     }
 }

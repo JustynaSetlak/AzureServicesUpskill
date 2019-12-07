@@ -14,7 +14,7 @@ namespace Orders.Repositories
     {
         private readonly CloudTable _table;
 
-        public BaseTableDbGenericRepository(IOptions<ProductsStorageConfig> productsStorageConfig)
+        public BaseTableDbGenericRepository(IOptions<ProductTableDbConfig> productsStorageConfig)
         {
             var storageAccount = CloudStorageAccount.Parse(productsStorageConfig.Value.ConnectionString);
             var tableClient = storageAccount.CreateCloudTableClient();

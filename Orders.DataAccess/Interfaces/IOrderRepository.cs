@@ -11,5 +11,7 @@ namespace Orders.Repositories.Interfaces
         Task CreateOrder(Order order);
 
         Task<Order> GetOrder(string orderId);
+
+        Task ReplaceDocument(Order order);
     }
 }
