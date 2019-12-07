@@ -21,7 +21,7 @@ namespace Orders.ApiControllers
         {
             var result = await _categoryService.InsertCategory(categoryToAdd);
 
-            if (result.IsSuccessfull)
+            if (!result.IsSuccessfull)
             {
                 return BadRequest();
             }

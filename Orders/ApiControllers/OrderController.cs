@@ -17,18 +17,12 @@ namespace Orders.ApiControllers
             _orderService = orderService;
         }
 
-        // GET: api/Order
-        [HttpGet]
-        public IEnumerable<string> Get()
+        [HttpGet("{id}")]
+        public async Task<OrderDto> Get(string id)
         {
-            return new string[] { "value1", "value2" };
-        }
+            var result = await _orderService.Get(id);
 
-        // GET: api/Order/5
-        [HttpGet("{id}", Name = "Get")]
-        public string Get(int id)
-        {
-            return "value";
+            return result;
         }
 
         [HttpPost]

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -15,8 +16,8 @@ namespace Orders.Models
 
         public decimal Price { get; set; }
 
-        public int CategoryId { get; set; }
+        public string CategoryId { get; set; }
 
-        public List<int> TagIds { get; set; }
+        public List<string> TagIds { get; set; }
     }
 }

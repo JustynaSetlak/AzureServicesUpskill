@@ -13,8 +13,8 @@ namespace Orders.Dtos.Order
 
         public decimal Price { get; set; }
 
-        public int CategoryId { get; set; }
+        public string CategoryId { get; set; }
 
-        public List<int> TagIds { get; set; }
+        public List<string> TagIds { get; set; }
     }
 }

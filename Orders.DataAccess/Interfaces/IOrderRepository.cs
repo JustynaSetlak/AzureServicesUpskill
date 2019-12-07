@@ -9,5 +9,7 @@ namespace Orders.Repositories.Interfaces
     public interface IOrderRepository
     {
         Task CreateOrder(Order order);
+
+        Task<Order> GetOrder(string orderId);
     }
 }

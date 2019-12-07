@@ -10,11 +10,11 @@ namespace Orders.Services
 {
     public class CategoryService : ICategoryService
     {
-        private readonly IGenericRepository<Category> _categoryRepository;
+        private readonly IBaseTableDbGenericRepository<Category> _categoryRepository;
 
-        public CategoryService(IGenericRepository<Category> genericRepository)
+        public CategoryService(IBaseTableDbGenericRepository<Category> documentGenericRepository)
         {
-            _categoryRepository = genericRepository;
+            _categoryRepository = documentGenericRepository;
         }
 
         public async Task<Result<string>> InsertCategory(CreateCategoryDto newCategory)

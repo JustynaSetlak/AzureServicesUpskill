@@ -10,11 +10,11 @@ namespace Orders.Services
 {
     public class TagService : ITagService
     {
-        private readonly IGenericRepository<Tag> _tagRepository;
+        private readonly IBaseTableDbGenericRepository<Tag> _tagRepository;
 
-        public TagService(IGenericRepository<Tag> genericRepository)
+        public TagService(IBaseTableDbGenericRepository<Tag> tagRepository)
         {
-            _tagRepository = genericRepository;
+            _tagRepository = tagRepository;
         }
 
         public async Task<Result<string>> InsertTag(CreateTagDto newTag)

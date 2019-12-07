@@ -3,31 +3,25 @@ using Microsoft.Azure.Documents;
 using Microsoft.Azure.Documents.Client;
 using Microsoft.Extensions.Options;
 using Orders.Config;
-using Orders.Configuration.Interfaces;
+using Orders.DataAccess.Interfaces;
 using System.Threading.Tasks;
 
-namespace Orders.Configuration
+namespace Orders.DataAccess.Repositories
 {
-    public class ProductsStorageConfigurationService : IProductsStorageConfigurationService
+    public class DatabaseConfigurationRepository : IDatabaseConfigurationRepository
     {
         private readonly ProductsStorageConfig _productStorageConfigOptions;
         private readonly OrdersDatabaseConfig _ordersDatabaseConfigOptions;
         private readonly IDocumentClient _documentClient;
 
-        public ProductsStorageConfigurationService(IDocumentClient documentClient, IOptions<ProductsStorageConfig> productStorageConfigOptions, IOptions<OrdersDatabaseConfig> ordersDatabaseConfigOptions)
+        public DatabaseConfigurationRepository(IDocumentClient documentClient, IOptions<ProductsStorageConfig> productStorageConfigOptions, IOptions<OrdersDatabaseConfig> ordersDatabaseConfigOptions)
         {
             _productStorageConfigOptions = productStorageConfigOptions.Value;
             _ordersDatabaseConfigOptions = ordersDatabaseConfigOptions.Value;
             _documentClient = documentClient;
         }
-
-        public async Task CreateDatabaseIfNotExist()
-        {
-            //await CreateProductsDatabaseIfNotxist();
-            //await CreateOrdersDatabaseIfNotExist();
-        }
-
-        private async Task CreateProductsDatabaseIfNotxist()
+            
+        public async Task CreateProductsTableDatabaseIfNotExist()
         {
             var storageAccount = CloudStorageAccount.Parse(_productStorageConfigOptions.ConnectionString);
             var tableClient = storageAccount.CreateCloudTableClient();
@@ -39,7 +33,7 @@ namespace Orders.Configuration
             await tagTable.CreateIfNotExistsAsync();
         }
 
-        private async Task CreateOrdersDatabaseIfNotExist()
+        public async Task CreateOrdersDocumentDatabaseIfNotExist()
         {
             await _documentClient.CreateDatabaseIfNotExistsAsync(new Database { Id = _ordersDatabaseConfigOptions.DatabaseName }).ConfigureAwait(false);
             await _documentClient.CreateDocumentCollectionIfNotExistsAsync(UriFactory.CreateDatabaseUri(_ordersDatabaseConfigOptions.DatabaseName), new DocumentCollection { Id = _ordersDatabaseConfigOptions.OrdersCollectionName });

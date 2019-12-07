@@ -2,7 +2,7 @@
 
 namespace Orders.Configuration.Interfaces
 {
-    public interface IProductsStorageConfigurationService
+    public interface IDatabaseConfigurationService
     {
         Task CreateDatabaseIfNotExist();
     }
