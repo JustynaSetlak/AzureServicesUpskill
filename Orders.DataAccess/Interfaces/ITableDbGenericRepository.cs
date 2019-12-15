@@ -7,12 +7,12 @@ namespace Orders.Repositories.Interfaces
 {
     public interface IBaseTableDbGenericRepository<T> where T : class, ITableEntity
     {
-        Task<Result<T>> Delete(T element);
+        Task<DataResult<T>> Delete(T element);
 
-        Task<Result<T>> Get(string partitionKey, string rowKey);
+        Task<DataResult<T>> Get(string partitionKey, string rowKey);
 
-        Task<Result<T>> Insert(T element);
+        Task<DataResult<T>> Insert(T element);
 
-        Task<Result<T>> Replace(T element);
+        Task<DataResult<T>> Replace(T element);
     }
 }

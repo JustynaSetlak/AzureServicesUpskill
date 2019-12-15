@@ -6,14 +6,16 @@
 
   <ItemGroup>
     <PackageReference Include="AutoMapper" Version="9.0.0" />
-    <PackageReference Include="Microsoft.AspNetCore.Http.Features" Version="2.2.0" />
+    <PackageReference Include="Microsoft.Azure.Search" Version="10.1.0" />
+    <PackageReference Include="Microsoft.Extensions.Options" Version="2.2.0" />
     <PackageReference Include="Microsoft.Spatial" Version="7.5.3" />
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Orders.Common\Orders.Common.csproj" />
+    <ProjectReference Include="..\Orders.Config\Orders.Config.csproj" />
     <ProjectReference Include="..\Orders.DataAccess\Orders.DataAccess.csproj" />
     <ProjectReference Include="..\Orders.Dtos\Orders.Dtos.csproj" />
-    <ProjectReference Include="..\Orders.Search\Orders.Search.csproj" />
   </ItemGroup>
 
 </Project>

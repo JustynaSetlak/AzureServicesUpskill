@@ -11,13 +11,15 @@ namespace Orders.Services
     public class TagService : ITagService
     {
         private readonly IBaseTableDbGenericRepository<Tag> _tagRepository;
+        private readonly IOrderRepository _orderRepository;
 
-        public TagService(IBaseTableDbGenericRepository<Tag> tagRepository)
+        public TagService(IBaseTableDbGenericRepository<Tag> tagRepository, IOrderRepository orderRepository)
         {
             _tagRepository = tagRepository;
+            _orderRepository = orderRepository;
         }
 
-        public async Task<Result<string>> InsertTag(CreateTagDto newTag)
+        public async Task<DataResult<string>> InsertTag(CreateTagDto newTag)
         {
             var guidIdentificator = Guid.NewGuid().ToString();
 
@@ -30,7 +32,7 @@ namespace Orders.Services
             };
 
             var insertResult = await _tagRepository.Insert(tag);
-            var result = new Result<string>(insertResult.IsSuccessfull, insertResult.Value.RowKey);
+            var result = new DataResult<string>(insertResult.IsSuccessfull, insertResult.Value.RowKey);
 
             return result;
         }
@@ -60,12 +62,14 @@ namespace Orders.Services
                 return false;
             }
 
+            //to check if orders exist
+
             var result = await _tagRepository.Delete(getResult.Value);
 
             return result.IsSuccessfull;
         }
 
-        public async Task<Result<Tag>> Get(string id)
+        public async Task<DataResult<Tag>> Get(string id)
         {
             var tag = await _tagRepository.Get(nameof(Tag), id);
 

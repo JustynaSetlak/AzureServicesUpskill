@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-using System.IO;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Orders.Dtos.Order;
@@ -19,20 +17,31 @@ namespace Orders.ApiControllers
             _orderService = orderService;
         }
 
+        [HttpGet]
+        public async Task<IActionResult> Get(SearchOrderParamsDto searchOrderParams)
+        {
+            return Ok();
+        }
+
         [HttpGet("{id}")]
-        public async Task<OrderDto> Get(string id)
+        public async Task<ActionResult> Get(string id)
         {
             var result = await _orderService.Get(id);
 
-            return result;
+            return Ok(result);
         }
 
         [HttpPost]
         public async Task<ActionResult> Post([FromBody] CreateOrderDto createOrderDto)
         {
-            await _orderService.CreateOrder(createOrderDto);
+            var result = await _orderService.CreateOrder(createOrderDto);
 
-            return Accepted();
+            if (!result.IsSuccessfull)
+            {
+                return BadRequest();
+            }
+
+            return CreatedAtAction(nameof(Get), new { id = result.Value }, createOrderDto);
         }
 
         [HttpPost("upload/{id}")]

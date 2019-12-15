@@ -11,10 +11,10 @@ namespace Orders.Services.Interfaces
     {
         Task<bool> Delete(string rowKey);
 
-        Task<Result<string>> InsertCategory(CreateCategoryDto newCategory);
+        Task<DataResult<string>> InsertCategory(CreateCategoryDto newCategory);
 
         Task<bool> UpdateDescription(UpdateCategoryDto updateCategoryDto);
 
-        Task<Result<Category>> Get(string id);
+        Task<DataResult<Category>> Get(string id);
     }
 }

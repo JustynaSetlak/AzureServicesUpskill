@@ -1,12 +1,14 @@
 ﻿using Microsoft.AspNetCore.Http;
+using Orders.Common.Results;
 using Orders.Dtos.Order;
+using Orders.Results;
 using System.Threading.Tasks;
 
 namespace Orders.Services.Interfaces
 {
     public interface IOrderService
     {
-        Task CreateOrder(CreateOrderDto createOrderDto);
+        Task<DataResult<string>> CreateOrder(CreateOrderDto createOrderDto);
 
         Task<OrderDto> Get(string id);
 

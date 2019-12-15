@@ -9,7 +9,7 @@ namespace Orders.Services.Interfaces
     {
         Task<bool> Delete(string id);
         Task<bool> UpdateDescription(UpdateTagDto tag);
-        Task<Result<Tag>> Get(string id);
-        Task<Result<string>> InsertTag(CreateTagDto tagToAdd);
+        Task<DataResult<Tag>> Get(string id);
+        Task<DataResult<string>> InsertTag(CreateTagDto tagToAdd);
     }
 }

@@ -17,7 +17,7 @@ namespace Orders.Services
             _categoryRepository = documentGenericRepository;
         }
 
-        public async Task<Result<string>> InsertCategory(CreateCategoryDto newCategory)
+        public async Task<DataResult<string>> InsertCategory(CreateCategoryDto newCategory)
         {
             var guidIdentificator = Guid.NewGuid().ToString();
 
@@ -30,7 +30,7 @@ namespace Orders.Services
             };
 
             var insertResult = await _categoryRepository.Insert(category);
-            var result = new Result<string>(insertResult.IsSuccessfull, insertResult.Value.RowKey);
+            var result = new DataResult<string>(insertResult.IsSuccessfull, insertResult.Value.RowKey);
 
             return result;
         }
@@ -65,7 +65,7 @@ namespace Orders.Services
             return result.IsSuccessfull;
         }
 
-        public async Task<Result<Category>> Get(string id)
+        public async Task<DataResult<Category>> Get(string id)
         {
             var category = await _categoryRepository.Get(nameof(Category), id);
 

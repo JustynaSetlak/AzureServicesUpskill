@@ -14,6 +14,7 @@ using Orders.Configuration;
 using Orders.Configuration.Interfaces;
 using Orders.DataAccess.Interfaces;
 using Orders.DataAccess.Repositories;
+using Orders.MappingProfiles;
 using Orders.Repositories;
 using Orders.Repositories.Interfaces;
 using Orders.Services;
@@ -42,25 +43,7 @@ namespace Orders
                 options.MinimumSameSitePolicy = SameSiteMode.None;
             });
 
-            services.Configure<ProductTableDbConfig>(Configuration.GetSection(nameof(ProductTableDbConfig)));
-            services.Configure<OrdersDatabaseConfig>(Configuration.GetSection(nameof(OrdersDatabaseConfig)));
-            services.Configure<StorageConfig>(Configuration.GetSection(nameof(StorageConfig)));
-
-            services.AddScoped<IDatabaseConfigurationService, DatabaseConfigurationService>();
-            services.AddScoped<ICategoryService, CategoryService>();
-            services.AddScoped<ITagService, TagService>();
-            services.AddScoped(typeof(IBaseTableDbGenericRepository<>), typeof(BaseTableDbGenericRepository<>));
-            services.AddScoped<IOrderService, OrderService>();
-            services.AddScoped<IOrderRepository, OrderRepository>();
-            services.AddScoped<IDatabaseConfigurationRepository, DatabaseConfigurationRepository>();
-            services.AddScoped<IBlobFileRepository, BlobFileRepository>();
-            services.AddScoped<IImageUploadService, ImageUploadService>();
-
-            var ordersDatabaseConfig = Configuration
-                .GetSection(nameof(OrdersDatabaseConfig))
-                .Get<OrdersDatabaseConfig>();
-
-            services.AddScoped<IDocumentClient>(x => new DocumentClient(new Uri(ordersDatabaseConfig.Url), ordersDatabaseConfig.Key));
+            services.ConfigureDependencyInjection(Configuration);
 
             services.AddSwaggerGen(c =>
             {
@@ -68,7 +51,7 @@ namespace Orders
                 c.OperationFilter<FileUploadOperationConfig>();
             });
 
-            services.AddAutoMapper(typeof(Startup));
+            services.AddAutoMapper(typeof(OrderProfile));
 
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
         }

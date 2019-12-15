@@ -24,7 +24,7 @@ namespace Orders.ApiControllers
         {
             var result = await _tagService.InsertTag(tagToAdd);
 
-            if (result.IsSuccessfull)
+            if (!result.IsSuccessfull)
             {
                 return BadRequest();
             }

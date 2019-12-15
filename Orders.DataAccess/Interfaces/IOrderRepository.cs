@@ -1,14 +1,12 @@
 ﻿using Orders.Models;
-using System;
-using System.Collections.Generic;
-using System.Linq;
+using Orders.Results;
 using System.Threading.Tasks;
 
 namespace Orders.Repositories.Interfaces
 {
     public interface IOrderRepository
     {
-        Task CreateOrder(Order order);
+        Task<DataResult<string>> CreateOrder(Order order);
 
         Task<Order> GetOrder(string orderId);
 

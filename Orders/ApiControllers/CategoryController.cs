@@ -55,10 +55,10 @@ namespace Orders.ApiControllers
             return Ok();
         }
 
-        [HttpDelete("{rowKey}")]
-        public async Task<ActionResult> Delete(string rowKey)
+        [HttpDelete("{id}")]
+        public async Task<ActionResult> Delete(string id)
         {
-            var result = await _categoryService.Delete(rowKey);
+            var result = await _categoryService.Delete(id);
 
             if (!result)
             {

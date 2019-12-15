@@ -4,7 +4,9 @@ using Microsoft.Extensions.Options;
 using Orders.Config;
 using Orders.Models;
 using Orders.Repositories.Interfaces;
+using Orders.Results;
 using System;
+using System.Collections.Generic;
 using System.Net;
 using System.Threading.Tasks;
 
@@ -23,9 +25,16 @@ namespace Orders.Repositories
             _orderDocumentCollectionFactory = UriFactory.CreateDocumentCollectionUri(ordersDatabaseConfigOptions.Value.DatabaseName, ordersDatabaseConfigOptions.Value.OrdersCollectionName);
         }
 
-        public async Task CreateOrder(Order order)
+        public async Task<DataResult<string>> CreateOrder(Order order)
         {
-            await _documentClient.CreateDocumentAsync(_orderDocumentCollectionFactory, order);
+            var response = await _documentClient.CreateDocumentAsync(_orderDocumentCollectionFactory, order);
+
+            //wydzielic - extension - is successfull (?)
+            var isSuccessful = response.StatusCode == HttpStatusCode.Created;
+
+            var result = new DataResult<string>(isSuccessful, response.Resource.Id);
+
+            return result;
         }
 
         public async Task ReplaceDocument(Order order)

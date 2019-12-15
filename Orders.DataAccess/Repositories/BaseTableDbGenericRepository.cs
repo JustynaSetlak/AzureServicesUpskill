@@ -1,10 +1,8 @@
 ﻿using Microsoft.Azure.Cosmos.Table;
 using Microsoft.Extensions.Options;
 using Orders.Config;
-using Orders.Models;
 using Orders.Repositories.Interfaces;
 using Orders.Results;
-using System.Collections.Generic;
 using System.Net;
 using System.Threading.Tasks;
 
@@ -22,7 +20,7 @@ namespace Orders.Repositories
             _table = tableClient.GetTableReference(typeof(T).Name);
         }
 
-        public async Task<Result<T>> Get(string partitionKey, string id)
+        public async Task<DataResult<T>> Get(string partitionKey, string id)
         {
             var retrieve = TableOperation.Retrieve<T>(partitionKey, id);
 
@@ -32,7 +30,7 @@ namespace Orders.Repositories
             return result;
         }
 
-        public async Task<Result<T>> Insert(T element)
+        public async Task<DataResult<T>> Insert(T element)
         {
             var insertOperation = TableOperation.Insert(element);
             var executionResult = await _table.ExecuteAsync(insertOperation);
@@ -42,7 +40,7 @@ namespace Orders.Repositories
             return result;
         }
 
-        public async Task<Result<T>> Replace(T element)
+        public async Task<DataResult<T>> Replace(T element)
         {
             var replace = TableOperation.Replace(element);
             var executionResult = await _table.ExecuteAsync(replace);
@@ -52,7 +50,7 @@ namespace Orders.Repositories
             return result;
         }
 
-        public async Task<Result<T>> Delete(T element)
+        public async Task<DataResult<T>> Delete(T element)
         {
             var deleteOperation = TableOperation.Delete(element);
             var executionResult = await _table.ExecuteAsync(deleteOperation);
@@ -61,11 +59,11 @@ namespace Orders.Repositories
             return result;
         }
 
-        private Result<T> GetResult(TableResult tableResult)
+        private DataResult<T> GetResult(TableResult tableResult)
         {
-            var isSuccessfull = ((int)tableResult.HttpStatusCode >= (int)HttpStatusCode.OK) && ((int)tableResult.HttpStatusCode < (int)HttpStatusCode.Ambiguous); ;
+            var isSuccessfull = ((int)tableResult.HttpStatusCode >= (int)HttpStatusCode.OK) && ((int)tableResult.HttpStatusCode < (int)HttpStatusCode.Ambiguous);
 
-            var result = new Result<T>(isSuccessfull, tableResult.Result as T);
+            var result = new DataResult<T>(isSuccessfull, tableResult.Result as T);
 
             return result;
         }

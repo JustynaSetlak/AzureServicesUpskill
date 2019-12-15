@@ -11,6 +11,7 @@
     <PackageReference Include="Microsoft.AspNetCore.App" />
     <PackageReference Include="Microsoft.AspNetCore.Razor.Design" Version="2.2.0" PrivateAssets="All" />
     <PackageReference Include="Microsoft.Azure.DocumentDB" Version="2.9.2" />
+    <PackageReference Include="Microsoft.Spatial" Version="7.5.3" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="4.0.1" />
     <PackageReference Include="Swashbuckle.AspNetCore.Swagger" Version="4.0.1" />
     <PackageReference Include="WindowsAzure.Storage" Version="9.3.3" />
@@ -18,9 +19,11 @@
 
 
   <ItemGroup>
+    <ProjectReference Include="..\Order.MappingProfiles\Orders.MappingProfiles.csproj" />
     <ProjectReference Include="..\Orders.BusinessLogic\Orders.BusinessLogic.csproj" />
     <ProjectReference Include="..\Orders.Config\Orders.Config.csproj" />
     <ProjectReference Include="..\Orders.DataAccess\Orders.DataAccess.csproj" />
+    <ProjectReference Include="..\Orders.Search\Orders.Search.csproj" />
   </ItemGroup>
 
 </Project>

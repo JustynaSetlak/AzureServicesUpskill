@@ -1,19 +1,13 @@
-﻿namespace Orders.Results
+﻿namespace Orders.Common.Results
 {
-    public class Result<T>
+    public class Result
     {
         public Result(bool isSuccessfull)
         {
             this.IsSuccessfull = isSuccessfull;
         }
 
-        public Result(bool isSuccessfull, T value) : this(isSuccessfull)
-        {
-            this.Value = value;
-        }
-
         public bool IsSuccessfull { get; }
 
-        public T Value { get; }
     }
 }
