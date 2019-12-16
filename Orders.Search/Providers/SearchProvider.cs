@@ -15,7 +15,7 @@ namespace Orders.Search.Providers
         public SearchProvider(IOptions<SearchServiceConfig> searchServiceConfig)
         {
             var serviceClient = new SearchServiceClient(searchServiceConfig.Value.SearchServiceName, new SearchCredentials(searchServiceConfig.Value.ApiKey));
-            _serviceClient = serviceClient.Indexes.GetClient(searchServiceConfig.Value.IndexName);
+            _serviceClient = serviceClient.Indexes.GetClient(searchServiceConfig.Value.OrderIndexName);
         }
 
         public async Task<T> Get(string id)

@@ -8,6 +8,7 @@ using Orders.Config;
 using Orders.Configuration.Interfaces;
 using Orders.DataAccess.Interfaces;
 using Orders.DataAccess.Repositories;
+using Orders.HostedServices;
 using Orders.Repositories;
 using Orders.Repositories.Interfaces;
 using Orders.Search.Interfaces;
@@ -41,6 +42,10 @@ namespace Orders.Configuration
             services.AddScoped<ITagRepository, TagRepository>();
             services.AddScoped<IDatabaseConfigurationRepository, DatabaseConfigurationRepository>();
             services.AddScoped<IBlobFileRepository, BlobFileRepository>();
+            services.AddScoped<IOrderIndexProvider, OrderIndexProvider>();
+            services.AddScoped<ISearchServiceClientProvider, SearchServiceClientProvider>();
+
+            services.AddHostedService<IndexingHostedService>();
 
             var ordersDatabaseConfig = configuration
                 .GetSection(nameof(OrdersDatabaseConfig))

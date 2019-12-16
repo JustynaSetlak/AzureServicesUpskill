@@ -7,7 +7,7 @@ namespace Orders.Config
 
         public string ApiKey { get; set; }
 
-        public string IndexName { get; set; }
+        public string OrderIndexName { get; set; }
 
         public string Url { get; set; }
     }

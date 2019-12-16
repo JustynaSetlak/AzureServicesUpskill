@@ -17,6 +17,7 @@ using Orders.DataAccess.Repositories;
 using Orders.MappingProfiles;
 using Orders.Repositories;
 using Orders.Repositories.Interfaces;
+using Orders.Search.Interfaces;
 using Orders.Services;
 using Orders.Services.Interfaces;
 using Swashbuckle.AspNetCore.Swagger;
@@ -57,7 +58,7 @@ namespace Orders
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env, IDatabaseConfigurationService databaseConfigurationService)
+        public void Configure(IApplicationBuilder app, IHostingEnvironment env, IDatabaseConfigurationService databaseConfigurationService, IOrderIndexProvider orderIndexProvider)
         {
             if (env.IsDevelopment())
             {
