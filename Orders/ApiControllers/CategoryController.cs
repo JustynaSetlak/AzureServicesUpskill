@@ -1,5 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Orders.Dtos;
+using Orders.BusinessLogic.Dtos.Category;
 using Orders.Services.Interfaces;
 using System.Threading.Tasks;
 

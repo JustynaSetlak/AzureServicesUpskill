@@ -1,5 +1,5 @@
 ﻿using Orders.Configuration.Interfaces;
-using Orders.DataAccess.Interfaces;
+using Orders.DataAccess.Repositories.Interfaces;
 using System.Threading.Tasks;
 
 namespace Orders.Configuration

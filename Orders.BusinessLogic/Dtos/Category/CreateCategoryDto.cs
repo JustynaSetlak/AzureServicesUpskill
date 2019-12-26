@@ -1,6 +1,6 @@
-﻿namespace Orders.Dtos.Tag
+﻿namespace Orders.BusinessLogic.Dtos.Category
 {
-    public class CreateTagDto
+    public class CreateCategoryDto
     {
         public string Name { get; set; }
 

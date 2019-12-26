@@ -1,16 +1,14 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Http;
+using Orders.BusinessLogic.Dtos.Order;
 using Orders.BusinessLogic.Interfaces;
-using Orders.Common.Results;
-using Orders.Dtos.Order;
+using Orders.DataAccess.Repositories.Interfaces;
 using Orders.Models;
-using Orders.Repositories.Interfaces;
 using Orders.Results;
-using Orders.Search.Interfaces;
 using Orders.Search.Models;
+using Orders.Search.Services.Interfaces;
 using Orders.Services.Interfaces;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace Orders.Services
@@ -18,16 +16,16 @@ namespace Orders.Services
     public class OrderService : IOrderService
     {
         private readonly IOrderRepository _orderRepository;
-        private readonly IBaseTableDbGenericRepository<Tag> _tagRepository;
-        private readonly IBaseTableDbGenericRepository<Category> _categoryRepository;
+        private readonly ITagRepository _tagRepository;
+        private readonly ICategoryRepository _categoryRepository;
         private readonly IImageUploadService _imageUploadService;
         private readonly IOrderSearchService _orderSearchService;
         private readonly IMapper _mapper;
 
         public OrderService(
-            IOrderRepository orderRepository, 
-            IBaseTableDbGenericRepository<Tag> tagRepository, 
-            IBaseTableDbGenericRepository<Category> categoryRepository, 
+            IOrderRepository orderRepository,
+            ITagRepository tagRepository, 
+            ICategoryRepository categoryRepository, 
             IImageUploadService imageUploadService, 
             IOrderSearchService orderSearchService,
             IMapper mapper)
@@ -40,6 +38,17 @@ namespace Orders.Services
             _mapper = mapper;
         }
 
+        public async Task<List<OrderDto>> Search(SearchOrderParamsDto searchOrderParams)
+        {
+            var searchParameters = _mapper.Map<OrderSearchParamsModel>(searchOrderParams);
+
+            var result = await _orderSearchService.Search(searchParameters);
+
+            var mappedResult = _mapper.Map<List<OrderDto>>(result);
+
+            return mappedResult;
+        }
+
         public async Task<DataResult<string>> CreateOrder(CreateOrderDto createOrderDto)
         {
             var orderToCreate = _mapper.Map<Order>(createOrderDto);
@@ -50,10 +59,10 @@ namespace Orders.Services
                 return new DataResult<string>(creatingResult.IsSuccessfull, string.Empty);
             }
 
-            var orderUploadModel = _mapper.Map<OrderUploadModel>(orderToCreate);
-            orderUploadModel.Id = creatingResult.Value;
+            var orderToUpload = await GetOrderDetails(orderToCreate);
+            orderToUpload.Id = creatingResult.Value;
 
-            await _orderSearchService.MergeOrUpload(orderUploadModel);
+            await _orderSearchService.MergeOrUpload(orderToUpload);
 
             return creatingResult;
         }
@@ -77,8 +86,8 @@ namespace Orders.Services
             order.ImageUrl = imageUri;
             await _orderRepository.ReplaceDocument(order);
 
-            var orderUploadModel = _mapper.Map<OrderUploadModel>(order);
-            await _orderSearchService.MergeOrUpload(orderUploadModel);
+            var orderToUpload = await GetOrderDetails(order);
+            await _orderSearchService.MergeOrUpload(orderToUpload);
 
             return true;
         }
@@ -98,8 +107,9 @@ namespace Orders.Services
             await _orderRepository.ReplaceDocument(order);
             await _imageUploadService.RemoveFile(oldImageUrl);
 
-            var orderUploadSearchModel = _mapper.Map<OrderUploadModel>(order);
-            await _orderSearchService.MergeOrUpload(orderUploadSearchModel);
+            var orderToUpload = await GetOrderDetails(order);
+
+            await _orderSearchService.MergeOrUpload(orderToUpload);
         }
 
         public async Task<OrderDto> Get(string id)
@@ -109,6 +119,32 @@ namespace Orders.Services
             var result = _mapper.Map<OrderDto>(searchedOrder);
 
             return result;
+        }
+
+        private async Task<OrderUploadModel> GetOrderDetails(Order orderToUpload)
+        {
+            var searchModel = _mapper.Map<OrderUploadModel>(orderToUpload);
+
+            var categoryRetrieveResult = await _categoryRepository.Get(orderToUpload.CategoryId);
+
+            if(categoryRetrieveResult.IsSuccessfull && categoryRetrieveResult.Value != null)
+            {
+                searchModel.Category = categoryRetrieveResult.Value.Name;
+            }
+
+            searchModel.Tags = new List<string>();
+
+            foreach (var tagId in orderToUpload.TagIds)
+            {
+                var tagRetrieveResult = await _tagRepository.Get(tagId);
+
+                if (tagRetrieveResult.IsSuccessfull && tagRetrieveResult.Value != null)
+                {
+                    searchModel.Tags.Add(tagRetrieveResult.Value.Name);
+                }
+            }
+
+            return searchModel;
         }
     }
 }

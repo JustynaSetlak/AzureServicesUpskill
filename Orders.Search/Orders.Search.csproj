@@ -13,9 +13,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Orders.Common\Orders.Common.csproj" />
-    <ProjectReference Include="..\Orders.Config\Orders.Config.csproj" />
     <ProjectReference Include="..\Orders.DataAccess\Orders.DataAccess.csproj" />
-    <ProjectReference Include="..\Orders.Dtos\Orders.Dtos.csproj" />
   </ItemGroup>
 
 </Project>

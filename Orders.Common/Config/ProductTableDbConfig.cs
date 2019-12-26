@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace Orders.Config
+﻿namespace Orders.Common.Config
 {
     public class ProductTableDbConfig
     {

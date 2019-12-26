@@ -3,25 +3,13 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Azure.Documents;
-using Microsoft.Azure.Documents.Client;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Orders.BusinessLogic.Interfaces;
-using Orders.BusinessLogic.Services;
-using Orders.Config;
 using Orders.Configuration;
 using Orders.Configuration.Interfaces;
-using Orders.DataAccess.Interfaces;
-using Orders.DataAccess.Repositories;
 using Orders.MappingProfiles;
-using Orders.Repositories;
-using Orders.Repositories.Interfaces;
 using Orders.Search.Interfaces;
-using Orders.Services;
-using Orders.Services.Interfaces;
 using Swashbuckle.AspNetCore.Swagger;
-using System;
 
 namespace Orders
 {

@@ -1,12 +1,11 @@
 ﻿using Microsoft.Azure.Documents;
 using Microsoft.Azure.Documents.Client;
 using Microsoft.Extensions.Options;
-using Orders.Config;
+using Orders.Common.Config;
+using Orders.DataAccess.Repositories.Interfaces;
 using Orders.Models;
-using Orders.Repositories.Interfaces;
 using Orders.Results;
 using System;
-using System.Collections.Generic;
 using System.Net;
 using System.Threading.Tasks;
 

@@ -1,7 +1,7 @@
 ﻿using Microsoft.Azure.Search;
 using Microsoft.Azure.Search.Models;
 using Microsoft.Extensions.Options;
-using Orders.Config;
+using Orders.Common.Config;
 using Orders.Search.Interfaces;
 using Orders.Search.Models.SearchModels;
 using System.Threading.Tasks;

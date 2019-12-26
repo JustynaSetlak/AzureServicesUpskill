@@ -1,6 +1,6 @@
 ﻿using System.Threading.Tasks;
 
-namespace Orders.DataAccess.Interfaces
+namespace Orders.DataAccess.Repositories.Interfaces
 {
     public interface IDatabaseConfigurationRepository
     {

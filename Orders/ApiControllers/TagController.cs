@@ -1,9 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Orders.Dtos.Tag;
+using Orders.BusinessLogic.Dtos.Tag;
 using Orders.Services.Interfaces;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace Orders.ApiControllers

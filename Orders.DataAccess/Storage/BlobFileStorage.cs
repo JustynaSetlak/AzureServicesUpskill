@@ -1,19 +1,19 @@
 ﻿using Microsoft.Extensions.Options;
 using Microsoft.WindowsAzure.Storage;
 using Microsoft.WindowsAzure.Storage.Blob;
-using Orders.Config;
-using Orders.DataAccess.Interfaces;
+using Orders.Common.Config;
+using Orders.DataAccess.Storage.Interfaces;
 using System;
 using System.IO;
 using System.Threading.Tasks;
 
-namespace Orders.DataAccess.Repositories
+namespace Orders.DataAccess.Storage
 {
-    public class BlobFileRepository : IBlobFileRepository
+    public class BlobFileStorage : IBlobFileStorage
     {
         private readonly StorageConfig _storageConfig;
 
-        public BlobFileRepository(IOptions<StorageConfig> storageConfigOptions)
+        public BlobFileStorage(IOptions<StorageConfig> storageConfigOptions)
         {
             _storageConfig = storageConfigOptions.Value;
         }

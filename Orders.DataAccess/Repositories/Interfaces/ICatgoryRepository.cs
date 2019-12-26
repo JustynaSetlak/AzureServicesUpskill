@@ -2,7 +2,7 @@
 using Orders.Results;
 using System.Threading.Tasks;
 
-namespace Orders.DataAccess.Interfaces
+namespace Orders.DataAccess.Repositories.Interfaces
 {
     public interface ICategoryRepository
     {

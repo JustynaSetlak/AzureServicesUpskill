@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Http;
-using Orders.Common.Results;
-using Orders.Dtos.Order;
+using Orders.BusinessLogic.Dtos.Order;
 using Orders.Results;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace Orders.Services.Interfaces
@@ -15,5 +15,7 @@ namespace Orders.Services.Interfaces
         Task<bool> UploadOrderImage(string id, string uploadedFileName, IFormFile uploadedFile);
 
         Task DeleteImage(string orderId);
+
+        Task<List<OrderDto>> Search(SearchOrderParamsDto searchOrderParams);
     }
 }

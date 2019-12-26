@@ -1,5 +1,5 @@
 ﻿using System.Threading.Tasks;
-using Orders.Dtos.Tag;
+using Orders.BusinessLogic.Dtos.Tag;
 using Orders.Models;
 using Orders.Results;
 

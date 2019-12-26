@@ -1,9 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 
-namespace Orders.Dtos.Order
+namespace Orders.BusinessLogic.Dtos.Order
 {
     public class CreateOrderDto
     {

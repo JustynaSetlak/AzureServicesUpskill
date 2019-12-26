@@ -2,8 +2,8 @@
 using Microsoft.Azure.Documents;
 using Microsoft.Azure.Documents.Client;
 using Microsoft.Extensions.Options;
-using Orders.Config;
-using Orders.DataAccess.Interfaces;
+using Orders.Common.Config;
+using Orders.DataAccess.Repositories.Interfaces;
 using System.Threading.Tasks;
 
 namespace Orders.DataAccess.Repositories

@@ -3,7 +3,7 @@ using Orders.Results;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
-namespace Orders.Repositories.Interfaces
+namespace Orders.DataAccess.Repositories.Interfaces
 {
     public interface IBaseTableDbGenericRepository<T> where T : class, ITableEntity
     {

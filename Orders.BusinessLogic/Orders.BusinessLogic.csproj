@@ -12,7 +12,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Orders.DataAccess\Orders.DataAccess.csproj" />
-    <ProjectReference Include="..\Orders.Dtos\Orders.Dtos.csproj" />
     <ProjectReference Include="..\Orders.Search\Orders.Search.csproj" />
   </ItemGroup>
 

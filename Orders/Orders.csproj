@@ -19,9 +19,7 @@
 
 
   <ItemGroup>
-    <ProjectReference Include="..\Order.MappingProfiles\Orders.MappingProfiles.csproj" />
     <ProjectReference Include="..\Orders.BusinessLogic\Orders.BusinessLogic.csproj" />
-    <ProjectReference Include="..\Orders.Config\Orders.Config.csproj" />
     <ProjectReference Include="..\Orders.DataAccess\Orders.DataAccess.csproj" />
     <ProjectReference Include="..\Orders.Search\Orders.Search.csproj" />
   </ItemGroup>

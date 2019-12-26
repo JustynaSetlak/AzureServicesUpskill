@@ -1,12 +1,6 @@
 ﻿using Microsoft.AspNetCore.Http;
-using Microsoft.Extensions.Options;
-using Microsoft.WindowsAzure.Storage;
-using Microsoft.WindowsAzure.Storage.Auth;
-using Microsoft.WindowsAzure.Storage.Blob;
 using Orders.BusinessLogic.Interfaces;
-using Orders.Config;
-using Orders.DataAccess.Interfaces;
-using System;
+using Orders.DataAccess.Storage.Interfaces;
 using System.IO;
 using System.Threading.Tasks;
 
@@ -15,16 +9,16 @@ namespace Orders.BusinessLogic.Services
 {
     public class ImageUploadService : IImageUploadService
     {
-        private readonly IBlobFileRepository _blobFileRepository;
+        private readonly IBlobFileStorage _blobFileStorage;
 
-        public ImageUploadService(IBlobFileRepository blobFileRepository)
+        public ImageUploadService(IBlobFileStorage blobFileStorage)
         {
-            _blobFileRepository = blobFileRepository;
+            _blobFileStorage = blobFileStorage;
         }
 
         public async Task<string> UploadFile(string fileName, IFormFile uploadedFileStream)
         {
-            var resultUri = await _blobFileRepository.UploadFile(fileName, uploadedFileStream.OpenReadStream());
+            var resultUri = await _blobFileStorage.UploadFile(fileName, uploadedFileStream.OpenReadStream());
 
             return resultUri;
         }
@@ -33,7 +27,7 @@ namespace Orders.BusinessLogic.Services
         {
             string fileName = Path.GetFileName(blobUri);
 
-            await _blobFileRepository.RemoveFile(fileName);
+            await _blobFileStorage.RemoveFile(fileName);
         }
     }
 }

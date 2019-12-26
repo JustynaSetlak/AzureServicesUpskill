@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace Orders.Dtos.Order
+namespace Orders.BusinessLogic.Dtos.Order
 {
     public class OrderDto
     {

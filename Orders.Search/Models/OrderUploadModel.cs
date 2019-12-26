@@ -14,8 +14,8 @@ namespace Orders.Search.Models
 
         public string ImageUrl { get; set; }
 
-        public string CategoryId { get; set; }
+        public string Category { get; set; }
 
-        public List<string> TagIds { get; set; }
+        public List<string> Tags { get; set; }
     }
 }

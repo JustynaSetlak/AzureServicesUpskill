@@ -1,8 +1,6 @@
-﻿using Orders.Dtos;
+﻿using Orders.BusinessLogic.Dtos.Category;
 using Orders.Models;
 using Orders.Results;
-using System;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace Orders.Services.Interfaces

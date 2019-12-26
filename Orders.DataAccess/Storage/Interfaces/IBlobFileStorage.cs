@@ -1,9 +1,9 @@
 ﻿using System.IO;
 using System.Threading.Tasks;
 
-namespace Orders.DataAccess.Interfaces
+namespace Orders.DataAccess.Storage.Interfaces
 {
-    public interface IBlobFileRepository
+    public interface IBlobFileStorage
     {
         Task<string> UploadFile(string fileName, Stream fileStream);
 

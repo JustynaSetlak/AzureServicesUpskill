@@ -1,29 +1,28 @@
 ﻿using AutoMapper;
-using Orders.DataAccess.Interfaces;
-using Orders.Models;
-using Orders.Search.Interfaces;
+using Microsoft.Azure.Search.Models;
+using Orders.DataAccess.Repositories.Interfaces;
 using Orders.Search.Models;
 using Orders.Search.Models.SearchModels;
+using Orders.Search.Services.Interfaces;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace Orders.Search.Providers
 {
     public class OrderSearchService : IOrderSearchService
     {
-        private readonly ISearchProvider<OrderSearchModel> _searchProvider;
+        private readonly ISearchService<OrderSearchModel> _searchService;
         private readonly ICategoryRepository _categoryRepository;
         private readonly ITagRepository _tagRepository;
         private readonly IMapper _mapper;
 
         public OrderSearchService(
-            ISearchProvider<OrderSearchModel> searchProvider, 
+            ISearchService<OrderSearchModel> searchService, 
             ICategoryRepository categoryRepository, 
             ITagRepository tagRepository,
             IMapper mapper)
         {
-            _searchProvider = searchProvider;
+            _searchService = searchService;
             _categoryRepository = categoryRepository;
             _tagRepository = tagRepository;
             _mapper = mapper;
@@ -31,7 +30,7 @@ namespace Orders.Search.Providers
 
         public async Task<OrderGetModel> Get(string id)
         {
-            var order = await _searchProvider.Get(id);
+            var order = await _searchService.Get(id);
 
             var result = _mapper.Map<OrderGetModel>(order);
 
@@ -40,31 +39,50 @@ namespace Orders.Search.Providers
 
         public async Task MergeOrUpload(OrderUploadModel orderUploadModel)
         {
-            var orderDetails = await GetOrderDetails(orderUploadModel);
-
-            await _searchProvider.MergeOrUploadItem(orderDetails);
+            var orderSearchModel = _mapper.Map<OrderSearchModel>(orderUploadModel);
+            
+            await _searchService.MergeOrUploadItem(orderSearchModel);
         }
 
-        private async Task<OrderSearchModel> GetOrderDetails(OrderUploadModel orderUploadModel)
+        public async Task<List<OrderGetModel>> Search(OrderSearchParamsModel orderSearchModel)
         {
-            var searchModel = _mapper.Map<OrderSearchModel>(orderUploadModel);
-            
-            var category = await _categoryRepository.Get(orderUploadModel.CategoryId);
-            searchModel.Category = category.Value.Name;
+            var searchParameters = BuildSearchBarameters(orderSearchModel);
 
-            searchModel.Tags = new List<string>();
+            var result = await _searchService.Search(orderSearchModel.ProductName, searchParameters);
 
-            foreach (var tagId in orderUploadModel.TagIds)
+            var mappedResult = _mapper.Map<List<OrderGetModel>>(result);
+
+            return mappedResult;
+        }
+
+        private SearchParameters BuildSearchBarameters(OrderSearchParamsModel orderSearchModel)
+        {
+            var filter = $"{nameof(OrderSearchModel.Price)} ge {orderSearchModel.MinimumPrice}";
+
+            if (orderSearchModel.MaximumPrice != null)
             {
-                var tagRetrieveResult = await _tagRepository.Get(tagId);
-
-                if (tagRetrieveResult.IsSuccessfull)
-                {
-                    searchModel.Tags.Add(tagRetrieveResult.Value.Name);
-                }
+                var maximumPriceFilter = $"{nameof(OrderSearchModel.Price)} le {orderSearchModel.MaximumPrice}";
+                filter = $"{filter} and {maximumPriceFilter}";
             }
 
-            return searchModel;
+            if (!string.IsNullOrEmpty(orderSearchModel.CategoryName))
+            {
+                var categoryFilter = $"{nameof(OrderSearchModel.Category)} eq '{orderSearchModel.CategoryName}'";
+                filter = $"{filter} and {categoryFilter}";
+            }
+
+            var orderExpression = new List<string> { $"{nameof(OrderSearchModel.Price)} {(orderSearchModel.IsPriceSortingAscending ? "asc" : "desc")}" };
+
+            var parameters = new SearchParameters
+            {
+                OrderBy = orderExpression,
+                Skip = (orderSearchModel.PageNumber - 1) * orderSearchModel.NumberOfElementsOnPage,
+                Top = orderSearchModel.NumberOfElementsOnPage,
+                Filter = filter,
+            };
+
+            return parameters;
         }
+
     }
 }

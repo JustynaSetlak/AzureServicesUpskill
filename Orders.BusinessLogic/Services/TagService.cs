@@ -1,6 +1,6 @@
-﻿using Orders.Dtos.Tag;
+﻿using Orders.BusinessLogic.Dtos.Tag;
+using Orders.DataAccess.Repositories.Interfaces;
 using Orders.Models;
-using Orders.Repositories.Interfaces;
 using Orders.Results;
 using Orders.Services.Interfaces;
 using System;

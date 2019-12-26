@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Orders.BusinessLogic.Dtos.Order;
 using Orders.Models;
 using Orders.Search.Models;
 using Orders.Search.Models.SearchModels;

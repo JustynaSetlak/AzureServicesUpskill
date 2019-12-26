@@ -1,7 +1,7 @@
 ﻿using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Orders.Dtos.Order;
+using Orders.BusinessLogic.Dtos.Order;
 using Orders.Services.Interfaces;
 
 namespace Orders.ApiControllers
@@ -18,9 +18,11 @@ namespace Orders.ApiControllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> Get(SearchOrderParamsDto searchOrderParams)
+        public async Task<IActionResult> Get([FromQuery] SearchOrderParamsDto searchOrderParams)
         {
-            return Ok();
+            var result = await _orderService.Search(searchOrderParams);
+
+            return Ok(result);
         }
 
         [HttpGet("{id}")]

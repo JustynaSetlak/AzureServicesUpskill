@@ -4,15 +4,17 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Orders.BusinessLogic.Interfaces;
 using Orders.BusinessLogic.Services;
-using Orders.Config;
+using Orders.Common.Config;
 using Orders.Configuration.Interfaces;
-using Orders.DataAccess.Interfaces;
 using Orders.DataAccess.Repositories;
+using Orders.DataAccess.Repositories.Interfaces;
+using Orders.DataAccess.Storage;
+using Orders.DataAccess.Storage.Interfaces;
 using Orders.HostedServices;
 using Orders.Repositories;
-using Orders.Repositories.Interfaces;
 using Orders.Search.Interfaces;
 using Orders.Search.Providers;
+using Orders.Search.Services.Interfaces;
 using Orders.Services;
 using Orders.Services.Interfaces;
 using System;
@@ -34,14 +36,14 @@ namespace Orders.Configuration
             services.AddScoped<IOrderService, OrderService>();
             services.AddScoped<IImageUploadService, ImageUploadService>();
             services.AddScoped<IOrderSearchService, OrderSearchService>();
-            services.AddScoped(typeof(ISearchProvider<>), typeof(SearchProvider<>));
+            services.AddScoped(typeof(ISearchService<>), typeof(SearchService<>));
 
             services.AddScoped(typeof(IBaseTableDbGenericRepository<>), typeof(BaseTableDbGenericRepository<>));
             services.AddScoped<IOrderRepository, OrderRepository>();
             services.AddScoped<ICategoryRepository, CategoryRepository>();
             services.AddScoped<ITagRepository, TagRepository>();
             services.AddScoped<IDatabaseConfigurationRepository, DatabaseConfigurationRepository>();
-            services.AddScoped<IBlobFileRepository, BlobFileRepository>();
+            services.AddScoped<IBlobFileStorage, BlobFileStorage>();
             services.AddScoped<IOrderIndexProvider, OrderIndexProvider>();
             services.AddScoped<ISearchServiceClientProvider, SearchServiceClientProvider>();
 

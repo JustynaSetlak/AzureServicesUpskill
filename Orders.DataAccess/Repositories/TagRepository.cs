@@ -1,10 +1,6 @@
-﻿using Orders.DataAccess.Interfaces;
+﻿using Orders.DataAccess.Repositories.Interfaces;
 using Orders.Models;
-using Orders.Repositories.Interfaces;
 using Orders.Results;
-using System;
-using System.Collections.Generic;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace Orders.DataAccess.Repositories

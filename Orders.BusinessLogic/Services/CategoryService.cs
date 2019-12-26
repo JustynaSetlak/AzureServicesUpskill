@@ -1,6 +1,6 @@
-﻿using Orders.Dtos;
+﻿using Orders.BusinessLogic.Dtos.Category;
+using Orders.DataAccess.Repositories.Interfaces;
 using Orders.Models;
-using Orders.Repositories.Interfaces;
 using Orders.Results;
 using Orders.Services.Interfaces;
 using System;
@@ -39,7 +39,7 @@ namespace Orders.Services
         {
             var getResult = await Get(updateCategoryDto.Id);
 
-            if (getResult.IsSuccessfull)
+            if (!getResult.IsSuccessfull)
             {
                 return false;
             }

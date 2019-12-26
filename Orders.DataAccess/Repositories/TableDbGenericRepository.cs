@@ -1,7 +1,7 @@
 ﻿using Microsoft.Azure.Cosmos.Table;
 using Microsoft.Extensions.Options;
-using Orders.Config;
-using Orders.Repositories.Interfaces;
+using Orders.Common.Config;
+using Orders.DataAccess.Repositories.Interfaces;
 using Orders.Results;
 using System.Net;
 using System.Threading.Tasks;
