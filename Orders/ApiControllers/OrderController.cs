@@ -49,7 +49,7 @@ namespace Orders.ApiControllers
         [HttpPost("upload/{id}")]
         public async Task<ActionResult> Post(string id, IFormFile uploadedFile)
         {
-            var isSuccessful = await _orderService.UploadOrderImage(id, uploadedFile.FileName, uploadedFile);
+            var isSuccessful = await _orderService.AssignOrderImage(id, uploadedFile.FileName, uploadedFile);
 
             if (!isSuccessful)
             {

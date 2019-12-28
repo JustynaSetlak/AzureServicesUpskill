@@ -12,7 +12,7 @@ namespace Orders.Services.Interfaces
 
         Task<OrderDto> Get(string id);
 
-        Task<bool> UploadOrderImage(string id, string uploadedFileName, IFormFile uploadedFile);
+        Task<bool> AssignOrderImage(string id, string uploadedFileName, IFormFile uploadedFile);
 
         Task DeleteImage(string orderId);
 

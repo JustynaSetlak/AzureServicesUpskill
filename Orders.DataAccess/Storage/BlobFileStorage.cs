@@ -41,6 +41,7 @@ namespace Orders.DataAccess.Storage
             }
             catch (Exception ex)
             {
+                //log ex
                 return string.Empty;
             }
         }

@@ -15,6 +15,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Orders.Common", "Orders.Com
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Orders.Search", "Orders.Search\Orders.Search.csproj", "{66A2D881-209F-4849-B097-F60DA889E98E}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Orders.EventHandler", "Orders.Events\Orders.EventHandler.csproj", "{53219B5B-9F8C-4CAF-BCF3-AF35CD227818}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -45,6 +47,10 @@ Global
 		{66A2D881-209F-4849-B097-F60DA889E98E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{66A2D881-209F-4849-B097-F60DA889E98E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{66A2D881-209F-4849-B097-F60DA889E98E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{53219B5B-9F8C-4CAF-BCF3-AF35CD227818}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{53219B5B-9F8C-4CAF-BCF3-AF35CD227818}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{53219B5B-9F8C-4CAF-BCF3-AF35CD227818}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{53219B5B-9F8C-4CAF-BCF3-AF35CD227818}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

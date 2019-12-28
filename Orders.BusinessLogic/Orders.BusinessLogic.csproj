@@ -12,7 +12,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Orders.DataAccess\Orders.DataAccess.csproj" />
-    <ProjectReference Include="..\Orders.Search\Orders.Search.csproj" />
+    <ProjectReference Include="..\Orders.Events\Orders.EventHandler.csproj" />
   </ItemGroup>
 
 </Project>

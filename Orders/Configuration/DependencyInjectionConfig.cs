@@ -10,6 +10,11 @@ using Orders.DataAccess.Repositories;
 using Orders.DataAccess.Repositories.Interfaces;
 using Orders.DataAccess.Storage;
 using Orders.DataAccess.Storage.Interfaces;
+using Orders.EventHandler.Events;
+using Orders.EventHandler.Handlers;
+using Orders.EventHandler.Interfaces;
+using Orders.EventHandler.Providers;
+using Orders.EventHandler.Services;
 using Orders.HostedServices;
 using Orders.Repositories;
 using Orders.Search.Interfaces;
@@ -29,6 +34,7 @@ namespace Orders.Configuration
             services.Configure<OrdersDatabaseConfig>(configuration.GetSection(nameof(OrdersDatabaseConfig)));
             services.Configure<StorageConfig>(configuration.GetSection(nameof(StorageConfig)));
             services.Configure<SearchServiceConfig>(configuration.GetSection(nameof(SearchServiceConfig)));
+            services.Configure<EventGridConfig>(configuration.GetSection(nameof(EventGridConfig)));
 
             services.AddScoped<IDatabaseConfigurationService, DatabaseConfigurationService>();
             services.AddScoped<ICategoryService, CategoryService>();
@@ -46,6 +52,11 @@ namespace Orders.Configuration
             services.AddScoped<IBlobFileStorage, BlobFileStorage>();
             services.AddScoped<IOrderIndexProvider, OrderIndexProvider>();
             services.AddScoped<ISearchServiceClientProvider, SearchServiceClientProvider>();
+
+            services.AddScoped<IOrderEventsPublishService, OrderEventsPublishService>();
+            services.AddScoped<IEventGridClientProvider, EventGridClientProvider>();
+            services.AddScoped<IEventDispatchService, EventDispatchService>();
+            services.AddScoped<IEventHandler<NewOrderCreated>, NewOrderCreatedEventHandler>();
 
             services.AddHostedService<IndexingHostedService>();
 

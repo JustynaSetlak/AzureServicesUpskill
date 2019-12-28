@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Orders.BusinessLogic.Dtos.Order;
+using Orders.EventHandler.Events;
 using Orders.Models;
 using Orders.Search.Models;
 using Orders.Search.Models.SearchModels;
@@ -12,8 +13,6 @@ namespace Orders.MappingProfiles
         {
             CreateMap<CreateOrderDto, Order>();
 
-            CreateMap<Order, OrderUploadModel>();
-
             CreateMap<OrderUploadModel, OrderSearchModel>();
 
             CreateMap<OrderSearchModel, OrderGetModel>();
@@ -22,6 +21,10 @@ namespace Orders.MappingProfiles
                 .ForMember(dst => dst.CategoryName, opts => opts.MapFrom(src => src.Category));
 
             CreateMap<SearchOrderParamsDto, OrderSearchParamsModel>();
+
+            CreateMap<Order, NewOrderCreated>();
+
+            CreateMap<NewOrderCreated, OrderUploadModel>();
         }
     }
 }

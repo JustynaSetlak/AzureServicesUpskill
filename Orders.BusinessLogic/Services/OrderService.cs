@@ -3,6 +3,8 @@ using Microsoft.AspNetCore.Http;
 using Orders.BusinessLogic.Dtos.Order;
 using Orders.BusinessLogic.Interfaces;
 using Orders.DataAccess.Repositories.Interfaces;
+using Orders.EventHandler.Events;
+using Orders.EventHandler.Interfaces;
 using Orders.Models;
 using Orders.Results;
 using Orders.Search.Models;
@@ -16,25 +18,22 @@ namespace Orders.Services
     public class OrderService : IOrderService
     {
         private readonly IOrderRepository _orderRepository;
-        private readonly ITagRepository _tagRepository;
-        private readonly ICategoryRepository _categoryRepository;
         private readonly IImageUploadService _imageUploadService;
         private readonly IOrderSearchService _orderSearchService;
+        private readonly IOrderEventsPublishService _orderEventsPublishService;
         private readonly IMapper _mapper;
 
         public OrderService(
             IOrderRepository orderRepository,
-            ITagRepository tagRepository, 
-            ICategoryRepository categoryRepository, 
             IImageUploadService imageUploadService, 
             IOrderSearchService orderSearchService,
+            IOrderEventsPublishService orderEventsPublishService,
             IMapper mapper)
         {
             _orderRepository = orderRepository;
-            _tagRepository = tagRepository;
-            _categoryRepository = categoryRepository;
             _imageUploadService = imageUploadService;
             _orderSearchService = orderSearchService;
+            _orderEventsPublishService = orderEventsPublishService;
             _mapper = mapper;
         }
 
@@ -59,15 +58,15 @@ namespace Orders.Services
                 return new DataResult<string>(creatingResult.IsSuccessfull, string.Empty);
             }
 
-            var orderToUpload = await GetOrderDetails(orderToCreate);
-            orderToUpload.Id = creatingResult.Value;
+            orderToCreate.Id = creatingResult.Value;
+            var newOrderCreatedEvent = _mapper.Map<NewOrderCreated>(orderToCreate);
 
-            await _orderSearchService.MergeOrUpload(orderToUpload);
+            await _orderEventsPublishService.PublishEvent(newOrderCreatedEvent);
 
             return creatingResult;
         }
 
-        public async Task<bool> UploadOrderImage(string id, string uploadedFileName, IFormFile uploadedFile)
+        public async Task<bool> AssignOrderImage(string id, string uploadedFileName, IFormFile uploadedFile)
         {
             var order = await _orderRepository.GetOrder(id);
 
@@ -86,8 +85,7 @@ namespace Orders.Services
             order.ImageUrl = imageUri;
             await _orderRepository.ReplaceDocument(order);
 
-            var orderToUpload = await GetOrderDetails(order);
-            await _orderSearchService.MergeOrUpload(orderToUpload);
+            await _orderEventsPublishService.PublishEvent(new ImageAssignedToOrder(order.Id, order.ImageUrl));
 
             return true;
         }
@@ -107,9 +105,7 @@ namespace Orders.Services
             await _orderRepository.ReplaceDocument(order);
             await _imageUploadService.RemoveFile(oldImageUrl);
 
-            var orderToUpload = await GetOrderDetails(order);
-
-            await _orderSearchService.MergeOrUpload(orderToUpload);
+            await _orderEventsPublishService.PublishEvent(new ImageUnussignedFromOrder(order.Id));
         }
 
         public async Task<OrderDto> Get(string id)
@@ -119,32 +115,6 @@ namespace Orders.Services
             var result = _mapper.Map<OrderDto>(searchedOrder);
 
             return result;
-        }
-
-        private async Task<OrderUploadModel> GetOrderDetails(Order orderToUpload)
-        {
-            var searchModel = _mapper.Map<OrderUploadModel>(orderToUpload);
-
-            var categoryRetrieveResult = await _categoryRepository.Get(orderToUpload.CategoryId);
-
-            if(categoryRetrieveResult.IsSuccessfull && categoryRetrieveResult.Value != null)
-            {
-                searchModel.Category = categoryRetrieveResult.Value.Name;
-            }
-
-            searchModel.Tags = new List<string>();
-
-            foreach (var tagId in orderToUpload.TagIds)
-            {
-                var tagRetrieveResult = await _tagRepository.Get(tagId);
-
-                if (tagRetrieveResult.IsSuccessfull && tagRetrieveResult.Value != null)
-                {
-                    searchModel.Tags.Add(tagRetrieveResult.Value.Name);
-                }
-            }
-
-            return searchModel;
         }
     }
 }
