@@ -1,18 +1,18 @@
 ﻿using Microsoft.Azure.Cosmos.Table;
 using Microsoft.Extensions.Options;
 using Orders.Common.Config;
-using Orders.DataAccess.Repositories.Interfaces;
+using Orders.DataAccess.TableRepositories.Interfaces;
 using Orders.Results;
 using System.Net;
 using System.Threading.Tasks;
 
-namespace Orders.Repositories
+namespace Orders.DataAccess.TableRepositories
 {
-    public class BaseTableDbGenericRepository<T> : IBaseTableDbGenericRepository<T> where T : class, ITableEntity
+    public class GenericTableRepository<T> : IGenericTableRepository<T> where T : class, ITableEntity
     {
         private readonly CloudTable _table;
 
-        public BaseTableDbGenericRepository(IOptions<ProductTableDbConfig> productsStorageConfig)
+        public GenericTableRepository(IOptions<ProductTableDbConfig> productsStorageConfig)
         {
             var storageAccount = CloudStorageAccount.Parse(productsStorageConfig.Value.ConnectionString);
             var tableClient = storageAccount.CreateCloudTableClient();
@@ -35,8 +35,8 @@ namespace Orders.Repositories
             var insertOperation = TableOperation.Insert(element);
             var executionResult = await _table.ExecuteAsync(insertOperation);
 
-            var result = this.GetResult(executionResult);
-            
+            var result = GetResult(executionResult);
+
             return result;
         }
 
@@ -45,7 +45,7 @@ namespace Orders.Repositories
             var replace = TableOperation.Replace(element);
             var executionResult = await _table.ExecuteAsync(replace);
 
-            var result = this.GetResult(executionResult);
+            var result = GetResult(executionResult);
 
             return result;
         }
@@ -55,13 +55,13 @@ namespace Orders.Repositories
             var deleteOperation = TableOperation.Delete(element);
             var executionResult = await _table.ExecuteAsync(deleteOperation);
 
-            var result = this.GetResult(executionResult);
+            var result = GetResult(executionResult);
             return result;
         }
 
         private DataResult<T> GetResult(TableResult tableResult)
         {
-            var isSuccessfull = ((int)tableResult.HttpStatusCode >= (int)HttpStatusCode.OK) && ((int)tableResult.HttpStatusCode < (int)HttpStatusCode.Ambiguous);
+            var isSuccessfull = tableResult.HttpStatusCode >= (int)HttpStatusCode.OK && tableResult.HttpStatusCode < (int)HttpStatusCode.Ambiguous;
 
             var result = new DataResult<T>(isSuccessfull, tableResult.Result as T);
 

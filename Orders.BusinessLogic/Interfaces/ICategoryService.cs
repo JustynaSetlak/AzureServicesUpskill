@@ -1,11 +1,12 @@
 ﻿using Orders.BusinessLogic.Dtos.Category;
+using Orders.BusinessLogic.Interfaces;
 using Orders.Models;
 using Orders.Results;
 using System.Threading.Tasks;
 
 namespace Orders.Services.Interfaces
 {
-    public interface ICategoryService
+    public interface ICategoryService : IService
     {
         Task<bool> Delete(string rowKey);
 

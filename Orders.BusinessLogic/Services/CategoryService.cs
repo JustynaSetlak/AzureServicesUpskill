@@ -1,5 +1,5 @@
 ﻿using Orders.BusinessLogic.Dtos.Category;
-using Orders.DataAccess.Repositories.Interfaces;
+using Orders.DataAccess.TableRepositories.Interfaces;
 using Orders.Models;
 using Orders.Results;
 using Orders.Services.Interfaces;
@@ -10,9 +10,9 @@ namespace Orders.Services
 {
     public class CategoryService : ICategoryService
     {
-        private readonly IBaseTableDbGenericRepository<Category> _categoryRepository;
+        private readonly IGenericTableRepository<Category> _categoryRepository;
 
-        public CategoryService(IBaseTableDbGenericRepository<Category> documentGenericRepository)
+        public CategoryService(IGenericTableRepository<Category> documentGenericRepository)
         {
             _categoryRepository = documentGenericRepository;
         }

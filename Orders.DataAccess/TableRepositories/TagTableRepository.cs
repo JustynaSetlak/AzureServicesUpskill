@@ -1,16 +1,16 @@
-﻿using Orders.DataAccess.Repositories.Interfaces;
+﻿using Orders.DataAccess.TableRepositories.Interfaces;
 using Orders.Models;
 using Orders.Results;
 using System.Threading.Tasks;
 
-namespace Orders.DataAccess.Repositories
+namespace Orders.DataAccess.TableRepositories
 {
-    public class TagRepository : ITagRepository
+    public class TagTableRepository : ITagTableRepository
     {
-        private readonly IBaseTableDbGenericRepository<Tag> _tagRepository;
+        private readonly IGenericTableRepository<Tag> _tagRepository;
         private readonly string categorPartitionKey = nameof(Tag);
 
-        public TagRepository(IBaseTableDbGenericRepository<Tag> tagRepository)
+        public TagTableRepository(IGenericTableRepository<Tag> tagRepository)
         {
             _tagRepository = tagRepository;
         }

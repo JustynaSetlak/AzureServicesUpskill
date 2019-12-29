@@ -1,6 +1,6 @@
 ﻿using AutoMapper;
 using Microsoft.Azure.Search.Models;
-using Orders.DataAccess.Repositories.Interfaces;
+using Orders.DataAccess.TableRepositories.Interfaces;
 using Orders.Search.Models;
 using Orders.Search.Models.SearchModels;
 using Orders.Search.Services.Interfaces;
@@ -12,14 +12,14 @@ namespace Orders.Search.Providers
     public class OrderSearchService : IOrderSearchService
     {
         private readonly ISearchService<OrderSearchModel> _searchService;
-        private readonly ICategoryRepository _categoryRepository;
-        private readonly ITagRepository _tagRepository;
+        private readonly ICategoryTableRepository _categoryRepository;
+        private readonly ITagTableRepository _tagRepository;
         private readonly IMapper _mapper;
 
         public OrderSearchService(
             ISearchService<OrderSearchModel> searchService, 
-            ICategoryRepository categoryRepository, 
-            ITagRepository tagRepository,
+            ICategoryTableRepository categoryRepository, 
+            ITagTableRepository tagRepository,
             IMapper mapper)
         {
             _searchService = searchService;

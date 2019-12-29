@@ -12,23 +12,19 @@ namespace Orders.DataAccess.Storage
     public class BlobFileStorage : IBlobFileStorage
     {
         private readonly StorageConfig _storageConfig;
+        private readonly CloudBlobClient _cloudBlobClient;
 
-        public BlobFileStorage(IOptions<StorageConfig> storageConfigOptions)
+        public BlobFileStorage(IOptions<StorageConfig> storageConfigOptions, IBlobStorageClientProvider blobStorageClientProvider)
         {
             _storageConfig = storageConfigOptions.Value;
+            _cloudBlobClient = blobStorageClientProvider.CreateBlobStorageProvider();
         }
 
         public async Task<string> UploadFile(string fileName, Stream uploadedFileStream)
         {
             try
             {
-                //var credential  = new StorageCredentials(_storageConfig.AccountName, _storageConfig.AccountKey);
-
-                var storageAccount = CloudStorageAccount.DevelopmentStorageAccount;
-
-                var client = storageAccount.CreateCloudBlobClient();
-
-                var container = client.GetContainerReference(_storageConfig.ImageContainer);
+                var container = _cloudBlobClient.GetContainerReference(_storageConfig.ImageContainer);
                 await container.CreateIfNotExistsAsync();
                 await container.SetPermissionsAsync(new BlobContainerPermissions
                 {

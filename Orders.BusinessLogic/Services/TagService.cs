@@ -1,5 +1,6 @@
 ﻿using Orders.BusinessLogic.Dtos.Tag;
 using Orders.DataAccess.Repositories.Interfaces;
+using Orders.DataAccess.TableRepositories.Interfaces;
 using Orders.Models;
 using Orders.Results;
 using Orders.Services.Interfaces;
@@ -10,10 +11,10 @@ namespace Orders.Services
 {
     public class TagService : ITagService
     {
-        private readonly IBaseTableDbGenericRepository<Tag> _tagRepository;
+        private readonly IGenericTableRepository<Tag> _tagRepository;
         private readonly IOrderRepository _orderRepository;
 
-        public TagService(IBaseTableDbGenericRepository<Tag> tagRepository, IOrderRepository orderRepository)
+        public TagService(IGenericTableRepository<Tag> tagRepository, IOrderRepository orderRepository)
         {
             _tagRepository = tagRepository;
             _orderRepository = orderRepository;

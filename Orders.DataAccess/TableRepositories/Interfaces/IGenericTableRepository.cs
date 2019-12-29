@@ -1,11 +1,10 @@
 ﻿using Microsoft.Azure.Cosmos.Table;
 using Orders.Results;
-using System.Collections.Generic;
 using System.Threading.Tasks;
 
-namespace Orders.DataAccess.Repositories.Interfaces
+namespace Orders.DataAccess.TableRepositories.Interfaces
 {
-    public interface IBaseTableDbGenericRepository<T> where T : class, ITableEntity
+    public interface IGenericTableRepository<T> where T : class, ITableEntity
     {
         Task<DataResult<T>> Delete(T element);
 

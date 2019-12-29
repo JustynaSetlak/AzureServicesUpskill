@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 using AutoMapper;
-using Orders.DataAccess.Repositories.Interfaces;
+using Orders.DataAccess.TableRepositories.Interfaces;
 using Orders.EventHandler.Events;
 using Orders.Search.Models;
 using Orders.Search.Services.Interfaces;
@@ -12,14 +12,14 @@ namespace Orders.EventHandler.Handlers
     {
         private readonly IOrderSearchService _orderSearchService;
         private readonly IMapper _mapper;
-        private readonly ITagRepository _tagRepository;
-        private readonly ICategoryRepository _categoryRepository;
+        private readonly ITagTableRepository _tagRepository;
+        private readonly ICategoryTableRepository _categoryRepository;
 
         public NewOrderCreatedEventHandler(
             IOrderSearchService orderSearchService, 
             IMapper mapper,
-            ITagRepository tagRepository,
-            ICategoryRepository categoryRepository)
+            ITagTableRepository tagRepository,
+            ICategoryTableRepository categoryRepository)
         {
             _orderSearchService = orderSearchService;
             _mapper = mapper;

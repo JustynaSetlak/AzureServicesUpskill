@@ -1,4 +1,6 @@
-﻿using Microsoft.Azure.Documents;
+﻿using Autofac;
+using Autofac.Extensions.DependencyInjection;
+using Microsoft.Azure.Documents;
 using Microsoft.Azure.Documents.Client;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -10,6 +12,8 @@ using Orders.DataAccess.Repositories;
 using Orders.DataAccess.Repositories.Interfaces;
 using Orders.DataAccess.Storage;
 using Orders.DataAccess.Storage.Interfaces;
+using Orders.DataAccess.TableRepositories;
+using Orders.DataAccess.TableRepositories.Interfaces;
 using Orders.EventHandler.Events;
 using Orders.EventHandler.Handlers;
 using Orders.EventHandler.Interfaces;
@@ -28,45 +32,67 @@ namespace Orders.Configuration
 {
     public static class DependencyInjectionConfig
     {
-        public static void ConfigureDependencyInjection(this IServiceCollection services, IConfiguration configuration)
+        public static AutofacServiceProvider ConfigureDependencyInjection(this IServiceCollection services, IConfiguration configuration)
         {
-            services.Configure<ProductTableDbConfig>(configuration.GetSection(nameof(ProductTableDbConfig)));
-            services.Configure<OrdersDatabaseConfig>(configuration.GetSection(nameof(OrdersDatabaseConfig)));
-            services.Configure<StorageConfig>(configuration.GetSection(nameof(StorageConfig)));
-            services.Configure<SearchServiceConfig>(configuration.GetSection(nameof(SearchServiceConfig)));
-            services.Configure<EventGridConfig>(configuration.GetSection(nameof(EventGridConfig)));
+            var builder = new ContainerBuilder();
 
-            services.AddScoped<IDatabaseConfigurationService, DatabaseConfigurationService>();
-            services.AddScoped<ICategoryService, CategoryService>();
-            services.AddScoped<ITagService, TagService>();
-            services.AddScoped<IOrderService, OrderService>();
-            services.AddScoped<IImageUploadService, ImageUploadService>();
-            services.AddScoped<IOrderSearchService, OrderSearchService>();
-            services.AddScoped(typeof(ISearchService<>), typeof(SearchService<>));
+            RegisterServices(builder);
+            RegisterDataAccessRepositories(builder, configuration);
+            RegisterEventServices(builder);
+            RegisterSearchServices(builder);
 
-            services.AddScoped(typeof(IBaseTableDbGenericRepository<>), typeof(BaseTableDbGenericRepository<>));
-            services.AddScoped<IOrderRepository, OrderRepository>();
-            services.AddScoped<ICategoryRepository, CategoryRepository>();
-            services.AddScoped<ITagRepository, TagRepository>();
-            services.AddScoped<IDatabaseConfigurationRepository, DatabaseConfigurationRepository>();
-            services.AddScoped<IBlobFileStorage, BlobFileStorage>();
-            services.AddScoped<IOrderIndexProvider, OrderIndexProvider>();
-            services.AddScoped<ISearchServiceClientProvider, SearchServiceClientProvider>();
+            builder.Populate(services);
 
-            services.AddScoped<IOrderEventsPublishService, OrderEventsPublishService>();
-            services.AddScoped<IEventGridClientProvider, EventGridClientProvider>();
-            services.AddScoped<IEventDispatchService, EventDispatchService>();
-            services.AddScoped<IEventHandler<NewOrderCreated>, NewOrderCreatedEventHandler>();
-            services.AddScoped<IEventHandler<ImageAssignedToOrder>, ImageAssignedToOrderEventHandler>();
-            services.AddScoped<IEventHandler<ImageUnussignedFromOrder>, ImageUnussignedFromOrderEventHandler>();
+            return new AutofacServiceProvider(builder.Build());            
+        }
 
-            services.AddHostedService<IndexingHostedService>();
+        private static void RegisterServices(ContainerBuilder builder)
+        {
+            builder
+                .RegisterAssemblyTypes(typeof(IService).Assembly)
+                .AsImplementedInterfaces()
+                .InstancePerLifetimeScope();
+        }
 
+        private static void RegisterEventServices(ContainerBuilder builder)
+        {
+            builder.RegisterType<OrderEventsPublishService>().As<IOrderEventsPublishService>();
+            builder.RegisterType<EventGridClientProvider>().As<IEventGridClientProvider>();
+            builder.RegisterType<EventDispatchService>().As<IEventDispatchService>();
+
+            builder
+                .RegisterAssemblyTypes(typeof(IEventHandler<>).Assembly)
+                .AsImplementedInterfaces()
+                .InstancePerLifetimeScope();
+        }
+
+        private static void RegisterSearchServices(ContainerBuilder builder)
+        {
+            builder.RegisterType<OrderSearchService>().As<IOrderSearchService>();
+            builder.RegisterType<OrderIndexProvider>().As<IOrderIndexProvider>();
+            builder.RegisterType<SearchServiceClientProvider>().As<ISearchServiceClientProvider>();
+            builder.RegisterGeneric(typeof(SearchService<>)).As(typeof(ISearchService<>));
+        }
+
+        private static void RegisterDataAccessRepositories(ContainerBuilder builder, IConfiguration configuration)
+        {
             var ordersDatabaseConfig = configuration
                 .GetSection(nameof(OrdersDatabaseConfig))
                 .Get<OrdersDatabaseConfig>();
 
-            services.AddScoped<IDocumentClient>(x => new DocumentClient(new Uri(ordersDatabaseConfig.Url), ordersDatabaseConfig.Key));
+            builder
+                .Register(x => new DocumentClient(new Uri(ordersDatabaseConfig.Url), ordersDatabaseConfig.Key))
+                .As<IDocumentClient>();
+
+            builder.RegisterType<BlobFileStorage>().As<IBlobFileStorage>();
+            builder.RegisterType<BlobStorageClientProvider>().As<IBlobStorageClientProvider>();
+
+            builder.RegisterType<OrderRepository>().As<IOrderRepository>();
+            builder.RegisterType<DatabaseConfigurationRepository>().As<IDatabaseConfigurationRepository>();
+
+            builder.RegisterType<CategoryTableRepository>().As<ICategoryTableRepository>();
+            builder.RegisterType<TagTableRepository>().As<ITagTableRepository>();
+            builder.RegisterGeneric(typeof(GenericTableRepository<>)).As(typeof(IGenericTableRepository<>));
         }
     }
 }

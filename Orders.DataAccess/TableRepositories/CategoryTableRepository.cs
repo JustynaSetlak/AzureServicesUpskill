@@ -1,16 +1,16 @@
-﻿using Orders.DataAccess.Repositories.Interfaces;
+﻿using Orders.DataAccess.TableRepositories.Interfaces;
 using Orders.Models;
 using Orders.Results;
 using System.Threading.Tasks;
 
-namespace Orders.DataAccess.Repositories
+namespace Orders.DataAccess.TableRepositories
 {
-    public class CategoryRepository : ICategoryRepository
+    public class CategoryTableRepository : ICategoryTableRepository
     {
-        private readonly IBaseTableDbGenericRepository<Category> _categoryRepository;
+        private readonly IGenericTableRepository<Category> _categoryRepository;
         private readonly string categorPartitionKey = nameof(Category);
 
-        public CategoryRepository(IBaseTableDbGenericRepository<Category> categoryRepository)
+        public CategoryTableRepository(IGenericTableRepository<Category> categoryRepository)
         {
             _categoryRepository = categoryRepository;
         }

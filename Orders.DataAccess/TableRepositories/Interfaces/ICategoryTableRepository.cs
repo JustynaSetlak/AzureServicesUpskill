@@ -2,9 +2,9 @@
 using Orders.Results;
 using System.Threading.Tasks;
 
-namespace Orders.DataAccess.Repositories.Interfaces
+namespace Orders.DataAccess.TableRepositories.Interfaces
 {
-    public interface ICategoryRepository
+    public interface ICategoryTableRepository
     {
         Task<DataResult<Category>> Get(string id);
     }

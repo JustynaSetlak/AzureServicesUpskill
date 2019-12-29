@@ -28,7 +28,6 @@ namespace Orders.Repositories
         {
             var response = await _documentClient.CreateDocumentAsync(_orderDocumentCollectionFactory, order);
 
-            //wydzielic - extension - is successfull (?)
             var isSuccessful = response.StatusCode == HttpStatusCode.Created;
 
             var result = new DataResult<string>(isSuccessful, response.Resource.Id);

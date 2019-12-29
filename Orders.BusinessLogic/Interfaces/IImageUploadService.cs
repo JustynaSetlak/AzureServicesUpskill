@@ -3,7 +3,7 @@ using System.Threading.Tasks;
 
 namespace Orders.BusinessLogic.Interfaces
 {
-    public interface IImageUploadService
+    public interface IImageUploadService : IService
     {
         Task<string> UploadFile(string fileName, IFormFile fileStream);
 

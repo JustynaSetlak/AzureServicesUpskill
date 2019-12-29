@@ -10,6 +10,7 @@ using Orders.Configuration.Interfaces;
 using Orders.MappingProfiles;
 using Orders.Search.Interfaces;
 using Swashbuckle.AspNetCore.Swagger;
+using System;
 
 namespace Orders
 {
@@ -23,7 +24,7 @@ namespace Orders
         public IConfiguration Configuration { get; }
 
         // This method gets called by the runtime. Use this method to add services to the container.
-        public void ConfigureServices(IServiceCollection services)
+        public IServiceProvider ConfigureServices(IServiceCollection services)
         {
             services.Configure<CookiePolicyOptions>(options =>
             {
@@ -32,7 +33,7 @@ namespace Orders
                 options.MinimumSameSitePolicy = SameSiteMode.None;
             });
 
-            services.ConfigureDependencyInjection(Configuration);
+            services.ConfigureOptions(Configuration);
 
             services.AddSwaggerGen(c =>
             {
@@ -43,6 +44,8 @@ namespace Orders
             services.AddAutoMapper(typeof(OrderProfile));
 
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
+
+            return services.ConfigureDependencyInjection(Configuration);
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -64,6 +67,7 @@ namespace Orders
             app.UseCookiePolicy();
 
             databaseConfigurationService.CreateDatabaseIfNotExist().GetAwaiter().GetResult();
+            orderIndexProvider.Create().GetAwaiter().GetResult();
 
             app.UseSwagger();
             app.UseSwaggerUI(c =>
