@@ -57,6 +57,8 @@ namespace Orders.Configuration
             services.AddScoped<IEventGridClientProvider, EventGridClientProvider>();
             services.AddScoped<IEventDispatchService, EventDispatchService>();
             services.AddScoped<IEventHandler<NewOrderCreated>, NewOrderCreatedEventHandler>();
+            services.AddScoped<IEventHandler<ImageAssignedToOrder>, ImageAssignedToOrderEventHandler>();
+            services.AddScoped<IEventHandler<ImageUnussignedFromOrder>, ImageUnussignedFromOrderEventHandler>();
 
             services.AddHostedService<IndexingHostedService>();
 

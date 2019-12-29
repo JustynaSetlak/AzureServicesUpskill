@@ -25,6 +25,8 @@ namespace Orders.MappingProfiles
             CreateMap<Order, NewOrderCreated>();
 
             CreateMap<NewOrderCreated, OrderUploadModel>();
+
+            CreateMap<OrderGetModel, OrderUploadModel>();
         }
     }
 }
