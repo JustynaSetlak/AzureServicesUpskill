@@ -43,9 +43,9 @@ namespace Orders.ApiControllers
         }
 
         [HttpPut]
-        public async Task<ActionResult> Update([FromBody] UpdateTagDto tag)
+        public async Task<ActionResult> Update([FromBody] UpsertTagDto tag)
         {
-            var result = await _tagService.UpdateDescription(tag);
+            var result = await _tagService.InsertOrMerge(tag);
 
             if (!result)
             {

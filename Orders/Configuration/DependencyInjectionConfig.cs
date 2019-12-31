@@ -4,6 +4,7 @@ using Microsoft.Azure.Documents;
 using Microsoft.Azure.Documents.Client;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 using Orders.BusinessLogic.Interfaces;
 using Orders.BusinessLogic.Services;
 using Orders.Common.Config;
@@ -12,6 +13,7 @@ using Orders.DataAccess.Repositories;
 using Orders.DataAccess.Repositories.Interfaces;
 using Orders.DataAccess.Storage;
 using Orders.DataAccess.Storage.Interfaces;
+using Orders.DataAccess.Storage.Providers;
 using Orders.DataAccess.TableRepositories;
 using Orders.DataAccess.TableRepositories.Interfaces;
 using Orders.EventHandler.Events;
@@ -40,6 +42,8 @@ namespace Orders.Configuration
             RegisterDataAccessRepositories(builder, configuration);
             RegisterEventServices(builder);
             RegisterSearchServices(builder);
+
+            builder.RegisterType<TagManagementHostedService>().As<IHostedService>();
 
             builder.Populate(services);
 
@@ -93,6 +97,10 @@ namespace Orders.Configuration
             builder.RegisterType<CategoryTableRepository>().As<ICategoryTableRepository>();
             builder.RegisterType<TagTableRepository>().As<ITagTableRepository>();
             builder.RegisterGeneric(typeof(GenericTableRepository<>)).As(typeof(IGenericTableRepository<>));
+            builder.RegisterGeneric(typeof(TableOperationExecutionRepository<>)).As(typeof(ITableOperationExecutionRepository<>));
+
+            builder.RegisterType<TagMananagementQueueStorage>().As<ITagManagementQueueStorage>();
+            builder.RegisterType<CloudQueueClientProvider>().As<ICloudQueueClientProvider>();
         }
     }
 }

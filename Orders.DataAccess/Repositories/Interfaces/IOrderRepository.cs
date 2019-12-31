@@ -1,4 +1,4 @@
-﻿using Orders.Models;
+﻿using Orders.DataAccess.Repositories.Models;
 using Orders.Results;
 using System.Threading.Tasks;
 

@@ -13,5 +13,7 @@ namespace Orders.DataAccess.TableRepositories.Interfaces
         Task<DataResult<T>> Insert(T element);
 
         Task<DataResult<T>> Replace(T element);
+
+        Task<DataResult<T>> InsertOrMerge(T element);
     }
 }

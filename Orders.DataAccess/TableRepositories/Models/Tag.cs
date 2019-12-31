@@ -1,8 +1,8 @@
 ﻿using Microsoft.Azure.Cosmos.Table;
 
-namespace Orders.Models
+namespace Orders.DataAccess.TableRepositories.Models
 {
-    public class Tag : TableEntity 
+    public class Tag : TableEntity
     {
         public string Name { get; set; }
 

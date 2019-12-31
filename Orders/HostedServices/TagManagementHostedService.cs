@@ -1,6 +1,7 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Orders.Search.Interfaces;
+using Orders.DataAccess.Storage.Interfaces;
+using Orders.Services.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,11 +10,11 @@ using System.Threading.Tasks;
 
 namespace Orders.HostedServices
 {
-    public class IndexingHostedService : IHostedService
+    public class TagManagementHostedService : IHostedService
     {
         private readonly IServiceProvider _serviceProvider;
 
-        public IndexingHostedService(IServiceProvider serviceProvider)
+        public TagManagementHostedService(IServiceProvider serviceProvider)
         {
             _serviceProvider = serviceProvider;
         }
@@ -22,9 +23,9 @@ namespace Orders.HostedServices
         {
             using (var scope = _serviceProvider.CreateScope())
             {
-                var orderIndexProvider = scope.ServiceProvider.GetRequiredService<IOrderIndexProvider>();
+                var tagService = scope.ServiceProvider.GetRequiredService<ITagService>();
 
-                await orderIndexProvider.Create();
+                await tagService.HandleMarketingTagModificationRequest();
             }
         }
 

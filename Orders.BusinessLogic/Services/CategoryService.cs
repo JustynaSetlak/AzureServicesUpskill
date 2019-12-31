@@ -1,6 +1,6 @@
 ﻿using Orders.BusinessLogic.Dtos.Category;
 using Orders.DataAccess.TableRepositories.Interfaces;
-using Orders.Models;
+using Orders.DataAccess.TableRepositories.Models;
 using Orders.Results;
 using Orders.Services.Interfaces;
 using System;

@@ -3,7 +3,7 @@ using Microsoft.Azure.Documents.Client;
 using Microsoft.Extensions.Options;
 using Orders.Common.Config;
 using Orders.DataAccess.Repositories.Interfaces;
-using Orders.Models;
+using Orders.DataAccess.Repositories.Models;
 using Orders.Results;
 using System;
 using System.Net;

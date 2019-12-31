@@ -1,4 +1,5 @@
-﻿namespace Orders.Common.Config
+﻿
+namespace Orders.Common.Config
 {
     public class StorageConfig
     {
@@ -9,5 +10,7 @@
         public string AccountKey { get; set; }
 
         public string ImageContainer { get; set; }
+
+        public string TagManagementQueueName { get; set; }
     }
 }

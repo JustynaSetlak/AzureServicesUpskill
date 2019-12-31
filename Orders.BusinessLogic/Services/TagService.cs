@@ -1,7 +1,9 @@
-﻿using Orders.BusinessLogic.Dtos.Tag;
+﻿using AutoMapper;
+using Orders.BusinessLogic.Dtos.Tag;
 using Orders.DataAccess.Repositories.Interfaces;
+using Orders.DataAccess.Storage.Interfaces;
 using Orders.DataAccess.TableRepositories.Interfaces;
-using Orders.Models;
+using Orders.DataAccess.TableRepositories.Models;
 using Orders.Results;
 using Orders.Services.Interfaces;
 using System;
@@ -11,13 +13,15 @@ namespace Orders.Services
 {
     public class TagService : ITagService
     {
-        private readonly IGenericTableRepository<Tag> _tagRepository;
-        private readonly IOrderRepository _orderRepository;
+        private readonly ITagTableRepository _tagRepository;
+        private readonly ITagManagementQueueStorage _tagManagementQueueStorage;
+        private readonly IMapper _mapper;
 
-        public TagService(IGenericTableRepository<Tag> tagRepository, IOrderRepository orderRepository)
+        public TagService(ITagTableRepository tagRepository, ITagManagementQueueStorage tagManagementQueueStorage, IMapper mapper)
         {
             _tagRepository = tagRepository;
-            _orderRepository = orderRepository;
+            _tagManagementQueueStorage = tagManagementQueueStorage;
+            _mapper = mapper;
         }
 
         public async Task<DataResult<string>> InsertTag(CreateTagDto newTag)
@@ -32,26 +36,10 @@ namespace Orders.Services
                 Description = newTag.Description
             };
 
-            var insertResult = await _tagRepository.Insert(tag);
+            var insertResult = await _tagRepository.InsertOrMerge(tag);
             var result = new DataResult<string>(insertResult.IsSuccessfull, insertResult.Value.RowKey);
 
             return result;
-        }
-
-        public async Task<bool> UpdateDescription(UpdateTagDto updateTagDto)
-        {
-            var getResult = await Get(updateTagDto.Id);
-
-            if (getResult.IsSuccessfull)
-            {
-                return false;
-            }
-
-            getResult.Value.Description = updateTagDto.Description;
-
-            var result = await _tagRepository.Replace(getResult.Value);
-
-            return result.IsSuccessfull;
         }
 
         public async Task<bool> Delete(string id)
@@ -63,8 +51,6 @@ namespace Orders.Services
                 return false;
             }
 
-            //to check if orders exist
-
             var result = await _tagRepository.Delete(getResult.Value);
 
             return result.IsSuccessfull;
@@ -72,9 +58,27 @@ namespace Orders.Services
 
         public async Task<DataResult<Tag>> Get(string id)
         {
-            var tag = await _tagRepository.Get(nameof(Tag), id);
+            var tag = await _tagRepository.Get(id);
 
             return tag;
+        }
+
+        public async Task<bool> InsertOrMerge(UpsertTagDto upsertTag)
+        {
+            var tag = _mapper.Map<Tag>(upsertTag);
+            var result = await _tagRepository.InsertOrMerge(tag);
+
+            return result.IsSuccessfull;
+        }
+
+        public async Task<Task<bool>> HandleMarketingTagModificationRequest()
+        {
+            var tagToUpsert = await _tagManagementQueueStorage.RetrieveMessage();
+
+            var tag = _mapper.Map<UpsertTagDto>(tagToUpsert);
+            var tagUpsertResult = InsertOrMerge(tag);
+
+            return tagUpsertResult;
         }
     }
 }

@@ -1,7 +1,7 @@
 ﻿using Newtonsoft.Json;
 using System.Collections.Generic;
 
-namespace Orders.Models
+namespace Orders.DataAccess.Repositories.Models
 {
     public class Order
     {
