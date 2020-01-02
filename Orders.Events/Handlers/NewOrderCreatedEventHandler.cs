@@ -1,6 +1,8 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 using AutoMapper;
+using Microsoft.AspNetCore.SignalR;
+using Orders.BusinessLogic.Hubs;
 using Orders.DataAccess.TableRepositories.Interfaces;
 using Orders.EventHandler.Events;
 using Orders.Search.Models;
@@ -14,17 +16,20 @@ namespace Orders.EventHandler.Handlers
         private readonly IMapper _mapper;
         private readonly ITagTableRepository _tagRepository;
         private readonly ICategoryTableRepository _categoryRepository;
+        private readonly IHubContext<OrderHub, IClientOrderHubActions> _hubContext;
 
         public NewOrderCreatedEventHandler(
             IOrderSearchService orderSearchService, 
             IMapper mapper,
             ITagTableRepository tagRepository,
-            ICategoryTableRepository categoryRepository)
+            ICategoryTableRepository categoryRepository,
+            IHubContext<OrderHub, IClientOrderHubActions> hubContext)
         {
             _orderSearchService = orderSearchService;
             _mapper = mapper;
             _tagRepository = tagRepository;
             _categoryRepository = categoryRepository;
+            _hubContext = hubContext;
         }
 
         public async Task Handle(NewOrderCreated eventData)
@@ -32,6 +37,8 @@ namespace Orders.EventHandler.Handlers
             var newOrderToUpload = await GetOrderDetails(eventData);
 
             await _orderSearchService.MergeOrUpload(newOrderToUpload);
+
+            await _hubContext.Clients.All.BroadcastMessage(nameof(NewOrderCreated), newOrderToUpload.Name);
         }
 
         private async Task<OrderUploadModel> GetOrderDetails(NewOrderCreated newOrderCreated)

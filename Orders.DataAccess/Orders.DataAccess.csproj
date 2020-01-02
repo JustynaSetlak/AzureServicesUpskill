@@ -14,8 +14,4 @@
     <ProjectReference Include="..\Orders.Common\Orders.Common.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Repositories\Models\" />
-  </ItemGroup>
-
 </Project>

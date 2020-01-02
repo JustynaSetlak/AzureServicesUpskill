@@ -6,9 +6,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Orders.BusinessLogic.Interfaces;
-using Orders.BusinessLogic.Services;
 using Orders.Common.Config;
-using Orders.Configuration.Interfaces;
 using Orders.DataAccess.Repositories;
 using Orders.DataAccess.Repositories.Interfaces;
 using Orders.DataAccess.Storage;
@@ -16,7 +14,6 @@ using Orders.DataAccess.Storage.Interfaces;
 using Orders.DataAccess.Storage.Providers;
 using Orders.DataAccess.TableRepositories;
 using Orders.DataAccess.TableRepositories.Interfaces;
-using Orders.EventHandler.Events;
 using Orders.EventHandler.Handlers;
 using Orders.EventHandler.Interfaces;
 using Orders.EventHandler.Providers;
@@ -26,8 +23,6 @@ using Orders.Repositories;
 using Orders.Search.Interfaces;
 using Orders.Search.Providers;
 using Orders.Search.Services.Interfaces;
-using Orders.Services;
-using Orders.Services.Interfaces;
 using System;
 
 namespace Orders.Configuration

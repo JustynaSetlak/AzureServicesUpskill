@@ -5,6 +5,8 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Orders.BusinessLogic.Hubs;
+using Orders.Common.Config;
 using Orders.Configuration;
 using Orders.Configuration.Interfaces;
 using Orders.MappingProfiles;
@@ -44,6 +46,7 @@ namespace Orders
             services.AddAutoMapper(typeof(OrderProfile));
 
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
+            services.AddSignalRService(Configuration);
 
             return services.ConfigureDependencyInjection(Configuration);
         }
@@ -63,7 +66,13 @@ namespace Orders
             }
 
             app.UseHttpsRedirection();
-            app.UseStaticFiles();
+
+            app.UseFileServer();
+            app.UseAzureSignalR(routes =>
+            {
+                routes.MapHub<OrderHub>("/order-events");
+            });
+
             app.UseCookiePolicy();
 
             databaseConfigurationService.CreateDatabaseIfNotExist().GetAwaiter().GetResult();
@@ -74,7 +83,7 @@ namespace Orders
             {
                 c.SwaggerEndpoint("/swagger/v1/swagger.json", "My API V1");
             });
-
+        
             app.UseMvc(routes =>
             {
                 routes.MapRoute(
