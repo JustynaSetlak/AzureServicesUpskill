@@ -8,5 +8,7 @@ namespace Orders.BusinessLogic.Interfaces
         Task<string> UploadFile(string fileName, IFormFile fileStream);
 
         Task RemoveFile(string blobUri);
+
+        string GetImageMiniatureUrl(string fileName);
     }
 }

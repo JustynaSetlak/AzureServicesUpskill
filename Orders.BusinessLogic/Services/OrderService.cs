@@ -82,7 +82,7 @@ namespace Orders.Services
                 return false;
             }
 
-            order.ImageUrl = imageUri;
+            order.ImageUrl = _imageUploadService.GetImageMiniatureUrl(uploadedFileName);
             await _orderRepository.ReplaceDocument(order);
 
             await _orderEventsPublishService.PublishEvent(new ImageAssignedToOrder(order.Id, order.ImageUrl));

@@ -8,5 +8,7 @@ namespace Orders.DataAccess.Storage.Interfaces
         Task<string> UploadFile(string fileName, Stream fileStream);
 
         Task RemoveFile(string fileName);
+
+        string GetFileUri(string fileName);
     }
 }

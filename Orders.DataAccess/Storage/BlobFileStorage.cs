@@ -1,5 +1,4 @@
 ﻿using Microsoft.Extensions.Options;
-using Microsoft.WindowsAzure.Storage;
 using Microsoft.WindowsAzure.Storage.Blob;
 using Orders.Common.Config;
 using Orders.DataAccess.Storage.Interfaces;
@@ -46,18 +45,27 @@ namespace Orders.DataAccess.Storage
         {
             try
             {
-
-                //var credential  = new StorageCredentials(_storageConfig.AccountName, _storageConfig.AccountKey);
-
-                var storageAccount = CloudStorageAccount.DevelopmentStorageAccount;
-
-                var client = storageAccount.CreateCloudBlobClient();
-
-                var container = client.GetContainerReference(_storageConfig.ImageContainer);
+                var container = _cloudBlobClient.GetContainerReference(_storageConfig.ImageContainer);
 
                 var blob = container.GetBlockBlobReference(fileName);
 
                 await blob.DeleteAsync();
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
+        }
+
+        public string GetFileUri(string fileName)
+        {
+            try
+            {
+                var container = _cloudBlobClient.GetContainerReference(_storageConfig.ImageContainer);
+
+                var blob = container.GetBlockBlobReference(fileName);
+
+                return blob.Uri.ToString();
             }
             catch (Exception ex)
             {
