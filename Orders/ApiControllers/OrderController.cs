@@ -64,7 +64,16 @@ namespace Orders.ApiControllers
         {
             await _orderService.DeleteImage(orderId);
 
-            return NoContent();
+            return Accepted();
         }
+
+        [HttpPut("{id}")]
+        public async Task<ActionResult> UpdatePrice(string id, [FromBody] UpdateOrderPriceDto updateOrderPriceDto)
+        {
+            await _orderService.UpdatePrice(id, updateOrderPriceDto.Price);
+
+            return Accepted();
+        }
+
     }
 }

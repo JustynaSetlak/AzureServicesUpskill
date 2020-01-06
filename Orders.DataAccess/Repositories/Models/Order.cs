@@ -12,7 +12,7 @@ namespace Orders.DataAccess.Repositories.Models
 
         public string Description { get; set; }
 
-        public decimal Price { get; set; }
+        public double Price { get; set; }
 
         public string ImageUrl { get; set; }
 

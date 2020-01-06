@@ -116,5 +116,20 @@ namespace Orders.Services
 
             return result;
         }
+
+        public async Task UpdatePrice(string id, double price)
+        {
+            var order = await _orderRepository.GetOrder(id);
+
+            if (string.IsNullOrEmpty(order?.ImageUrl))
+            {
+                return;
+            }
+
+            order.Price = price;
+            await _orderRepository.ReplaceDocument(order);
+
+            await _orderEventsPublishService.PublishEvent(new OrderPriceModified(order.Id, order.Name, order.Price));
+        }
     }
 }

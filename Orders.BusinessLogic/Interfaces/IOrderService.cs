@@ -18,5 +18,7 @@ namespace Orders.Services.Interfaces
         Task DeleteImage(string orderId);
 
         Task<List<OrderDto>> Search(SearchOrderParamsDto searchOrderParams);
+
+        Task UpdatePrice(string id, double price);
     }
 }
