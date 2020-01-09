@@ -23,7 +23,7 @@ namespace Orders.EventHandler.Services
 
         public async Task PublishEvent(IEvent eventToPublish)
         {
-            var eventType = eventToPublish.GetType().FullName;
+            var eventType = eventToPublish.GetType().Name;
 
             var sampleEvent = new EventGridEvent()
             {
