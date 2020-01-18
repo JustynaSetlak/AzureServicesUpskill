@@ -1,7 +1,6 @@
-﻿using Microsoft.Azure.Cosmos.Table;
-using Newtonsoft.Json;
+﻿using Microsoft.WindowsAzure.Storage.Table;
 
-namespace Orders.DataAccess.TableRepositories.Models
+namespace Orders.Functions.Models
 {
     public class Tag : TableEntity
     {

@@ -33,6 +33,7 @@ namespace Orders.DataAccess.TableRepositories
         public async Task<DataResult<T>> InsertOrMerge(T element)
         {
             var insertOrReplace = TableOperation.Insert(element);
+
             var result = await _tableOperationExecutionRepository.ExecuteOperation(insertOrReplace);
 
             return result;

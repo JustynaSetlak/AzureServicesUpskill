@@ -17,7 +17,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Orders.Search", "Orders.Sea
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Orders.EventHandler", "Orders.Events\Orders.EventHandler.csproj", "{53219B5B-9F8C-4CAF-BCF3-AF35CD227818}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Orders.Functions", "Orders.Functions\Orders.Functions.csproj", "{1E9C6569-4F7B-436D-87B1-A8FE1DFB8F49}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Orders.Functions", "Orders.Functions\Orders.Functions.csproj", "{1E9C6569-4F7B-436D-87B1-A8FE1DFB8F49}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
