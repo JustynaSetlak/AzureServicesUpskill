@@ -1,12 +1,15 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
 using Microsoft.AspNetCore.SignalR;
-using Orders.BusinessLogic.Hubs;
-using Orders.DataAccess.TableRepositories.Interfaces;
+using Orders.BusinessLogic.Interfaces.Infrastructure;
 using Orders.EventHandler.Events;
+using Orders.EventHandler.Models;
+using Orders.Hubs;
 using Orders.Search.Models;
 using Orders.Search.Services.Interfaces;
+using Orders.TableStorage.Repositories.Interfaces;
 
 namespace Orders.EventHandler.Handlers
 {
@@ -17,19 +20,22 @@ namespace Orders.EventHandler.Handlers
         private readonly ITagTableRepository _tagRepository;
         private readonly ICategoryTableRepository _categoryRepository;
         private readonly IHubContext<OrderHub, IClientOrderHubActions> _hubContext;
+        private readonly ICacheService _cacheService;
 
         public NewOrderCreatedEventHandler(
             IOrderSearchService orderSearchService, 
             IMapper mapper,
             ITagTableRepository tagRepository,
             ICategoryTableRepository categoryRepository,
-            IHubContext<OrderHub, IClientOrderHubActions> hubContext)
+            IHubContext<OrderHub, IClientOrderHubActions> hubContext,
+            ICacheService cacheService)
         {
             _orderSearchService = orderSearchService;
             _mapper = mapper;
             _tagRepository = tagRepository;
             _categoryRepository = categoryRepository;
             _hubContext = hubContext;
+            _cacheService = cacheService;
         }
 
         public async Task Handle(NewOrderCreated eventData)
@@ -54,6 +60,17 @@ namespace Orders.EventHandler.Handlers
 
             searchModel.Tags = new List<string>();
 
+            var cachedData = await _cacheService.GetValue<List<TagDto>>("tags");
+            if(cachedData != null)
+            {
+                var orderTags = cachedData
+                    .Where(t => newOrderCreated.TagIds.Contains(t.RowKey))
+                    .Select(t => t.Name)
+                    .ToList();
+
+                searchModel.Tags = orderTags;
+            }
+             
             foreach (var tagId in newOrderCreated.TagIds)
             {
                 var tagRetrieveResult = await _tagRepository.Get(tagId);
@@ -62,6 +79,10 @@ namespace Orders.EventHandler.Handlers
                 {
                     searchModel.Tags.Add(tagRetrieveResult.Value.Name);
                 }
+            // ReadThroughCache<T>(string key, Fun<Task<T>> getter) {
+            //    Mam w caszu?
+            //      tak - zwroc
+            //      nie - pobierz, skaszuj, zwróc
             }
 
             return searchModel;

@@ -1,8 +1,8 @@
 ﻿using Microsoft.Azure.Search;
 using Microsoft.Azure.Search.Models;
 using Microsoft.Extensions.Options;
-using Orders.Common.Config;
 using Orders.Search.Interfaces;
+using Orders.Search.Options;
 using Orders.Search.Services.Interfaces;
 using System.Collections.Generic;
 using System.Linq;

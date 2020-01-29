@@ -1,15 +1,15 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Http;
 using Orders.BusinessLogic.Dtos.Order;
-using Orders.BusinessLogic.Interfaces;
+using Orders.BusinessLogic.Services.Interfaces;
 using Orders.DataAccess.Repositories.Interfaces;
-using Orders.DataAccess.Repositories.Models;
+using Orders.DocumentDataAccess.Dtos;
 using Orders.EventHandler.Events;
 using Orders.EventHandler.Interfaces;
 using Orders.Results;
 using Orders.Search.Models;
 using Orders.Search.Services.Interfaces;
-using Orders.Services.Interfaces;
+using Orders.Storage.FileStorage.Services.Interfaces;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
@@ -37,21 +37,21 @@ namespace Orders.Services
             _mapper = mapper;
         }
 
-        public async Task<List<OrderDto>> Search(SearchOrderParamsDto searchOrderParams)
+        public async Task<List<OrderDetailsDto>> Search(SearchOrderParamsDto searchOrderParams)
         {
             var searchParameters = _mapper.Map<OrderSearchParamsModel>(searchOrderParams);
 
             var result = await _orderSearchService.Search(searchParameters);
 
-            var mappedResult = _mapper.Map<List<OrderDto>>(result);
+            var mappedResult = _mapper.Map<List<OrderDetailsDto>>(result);
 
             return mappedResult;
         }
 
         public async Task<DataResult<string>> CreateOrder(CreateOrderDto createOrderDto)
         {
-            var orderToCreate = _mapper.Map<Order>(createOrderDto);
-            var creatingResult = await _orderRepository.CreateOrder(orderToCreate);
+            var orderToCreate = _mapper.Map<OrderDto>(createOrderDto);
+            var creatingResult = await _orderRepository.Create(orderToCreate);
 
             if (!creatingResult.IsSuccessfull)
             {
@@ -68,7 +68,7 @@ namespace Orders.Services
 
         public async Task<bool> AssignOrderImage(string id, string uploadedFileName, IFormFile uploadedFile)
         {
-            var order = await _orderRepository.GetOrder(id);
+            var order = await _orderRepository.Get(id);
 
             if (order == null || !string.IsNullOrEmpty(order.ImageUrl))
             {
@@ -83,7 +83,7 @@ namespace Orders.Services
             }
 
             order.ImageUrl = _imageUploadService.GetImageMiniatureUrl(uploadedFileName);
-            await _orderRepository.ReplaceDocument(order);
+            await _orderRepository.Replace(order);
 
             await _orderEventsPublishService.PublishEvent(new ImageAssignedToOrder(order.Id, order.ImageUrl));
 
@@ -92,7 +92,7 @@ namespace Orders.Services
 
         public async Task DeleteImage(string orderId)
         {
-            var order = await _orderRepository.GetOrder(orderId);
+            var order = await _orderRepository.Get(orderId);
 
             if (string.IsNullOrEmpty(order?.ImageUrl))
             {
@@ -102,24 +102,24 @@ namespace Orders.Services
             var oldImageUrl = order.ImageUrl;
             order.ImageUrl = string.Empty;
 
-            await _orderRepository.ReplaceDocument(order);
+            await _orderRepository.Replace(order);
             await _imageUploadService.RemoveFile(oldImageUrl);
 
             await _orderEventsPublishService.PublishEvent(new ImageUnussignedFromOrder(order.Id));
         }
 
-        public async Task<OrderDto> Get(string id)
+        public async Task<OrderDetailsDto> Get(string id)
         {
             var searchedOrder = await _orderSearchService.Get(id);
 
-            var result = _mapper.Map<OrderDto>(searchedOrder);
+            var result = _mapper.Map<OrderDetailsDto>(searchedOrder);
 
             return result;
         }
 
         public async Task UpdatePrice(string id, double price)
         {
-            var order = await _orderRepository.GetOrder(id);
+            var order = await _orderRepository.Get(id);
 
             if (string.IsNullOrEmpty(order?.ImageUrl))
             {
@@ -127,7 +127,7 @@ namespace Orders.Services
             }
 
             order.Price = price;
-            await _orderRepository.ReplaceDocument(order);
+            await _orderRepository.Replace(order);
 
             await _orderEventsPublishService.PublishEvent(new OrderPriceModified(order.Id, order.Name, order.Price));
         }

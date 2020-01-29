@@ -1,29 +1,23 @@
 ﻿using Autofac;
 using Autofac.Extensions.DependencyInjection;
-using Microsoft.Azure.Documents;
-using Microsoft.Azure.Documents.Client;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Orders.BusinessLogic.Interfaces;
-using Orders.Common.Config;
-using Orders.DataAccess.Repositories;
-using Orders.DataAccess.Repositories.Interfaces;
-using Orders.DataAccess.Storage;
-using Orders.DataAccess.Storage.Interfaces;
-using Orders.DataAccess.Storage.Providers;
-using Orders.DataAccess.TableRepositories;
-using Orders.DataAccess.TableRepositories.Interfaces;
+using Orders.BusinessLogic.DependencyModules;
+using Orders.BusinessLogic.Services.Interfaces;
+using Orders.DocumentDataAccess.DependencyModules;
+using Orders.DocumentDataAccess.Options;
 using Orders.EventHandler.Handlers;
 using Orders.EventHandler.Interfaces;
 using Orders.EventHandler.Providers;
 using Orders.EventHandler.Services;
 using Orders.HostedServices;
-using Orders.Repositories;
+using Orders.Search.DependencyModules;
 using Orders.Search.Interfaces;
 using Orders.Search.Providers;
 using Orders.Search.Services.Interfaces;
-using System;
+using Orders.Storage.DependencyModules;
+using Orders.TableStorage.DependencyModules;
 
 namespace Orders.Configuration
 {
@@ -33,24 +27,18 @@ namespace Orders.Configuration
         {
             var builder = new ContainerBuilder();
 
-            RegisterServices(builder);
-            RegisterDataAccessRepositories(builder, configuration);
-            RegisterEventServices(builder);
-            RegisterSearchServices(builder);
+            builder.RegisterModule<StorageDependencyModule>();
+            builder.RegisterModule<TableStorageDependencyModule>();
+            builder.RegisterType<SearchDependencyModule>();
+            builder.RegisterType<BusinessLogicDependencyModule>();
 
-            builder.RegisterType<TagManagementHostedService>().As<IHostedService>();
+            var ordersDatabaseConfig = configuration.GetSection(nameof(OrdersDatabaseConfig)).Get<OrdersDatabaseConfig>();
+            builder.RegisterModule(new DocumentDataAccessDependencyModule(ordersDatabaseConfig));
+
+            RegisterEventServices(builder);
 
             builder.Populate(services);
-
             return new AutofacServiceProvider(builder.Build());            
-        }
-
-        private static void RegisterServices(ContainerBuilder builder)
-        {
-            builder
-                .RegisterAssemblyTypes(typeof(IService).Assembly)
-                .AsImplementedInterfaces()
-                .InstancePerLifetimeScope();
         }
 
         private static void RegisterEventServices(ContainerBuilder builder)
@@ -63,39 +51,6 @@ namespace Orders.Configuration
                 .RegisterAssemblyTypes(typeof(IEventHandler<>).Assembly)
                 .AsImplementedInterfaces()
                 .InstancePerLifetimeScope();
-        }
-
-        private static void RegisterSearchServices(ContainerBuilder builder)
-        {
-            builder.RegisterType<OrderSearchService>().As<IOrderSearchService>();
-            builder.RegisterType<OrderIndexProvider>().As<IOrderIndexProvider>();
-            builder.RegisterType<SearchServiceClientProvider>().As<ISearchServiceClientProvider>();
-            builder.RegisterGeneric(typeof(SearchService<>)).As(typeof(ISearchService<>));
-        }
-
-        private static void RegisterDataAccessRepositories(ContainerBuilder builder, IConfiguration configuration)
-        {
-            var ordersDatabaseConfig = configuration
-                .GetSection(nameof(OrdersDatabaseConfig))
-                .Get<OrdersDatabaseConfig>();
-
-            builder
-                .Register(x => new DocumentClient(new Uri(ordersDatabaseConfig.Url), ordersDatabaseConfig.Key))
-                .As<IDocumentClient>();
-
-            builder.RegisterType<BlobFileStorage>().As<IBlobFileStorage>();
-            builder.RegisterType<BlobStorageClientProvider>().As<IBlobStorageClientProvider>();
-
-            builder.RegisterType<OrderRepository>().As<IOrderRepository>();
-            builder.RegisterType<DatabaseConfigurationRepository>().As<IDatabaseConfigurationRepository>();
-
-            builder.RegisterType<CategoryTableRepository>().As<ICategoryTableRepository>();
-            builder.RegisterType<TagTableRepository>().As<ITagTableRepository>();
-            builder.RegisterGeneric(typeof(GenericTableRepository<>)).As(typeof(IGenericTableRepository<>));
-            builder.RegisterGeneric(typeof(TableOperationExecutionRepository<>)).As(typeof(ITableOperationExecutionRepository<>));
-
-            builder.RegisterType<TagMananagementQueueStorage>().As<ITagManagementQueueStorage>();
-            builder.RegisterType<CloudQueueClientProvider>().As<ICloudQueueClientProvider>();
         }
     }
 }

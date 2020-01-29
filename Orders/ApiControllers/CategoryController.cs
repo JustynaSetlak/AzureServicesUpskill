@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Orders.BusinessLogic.Dtos.Category;
-using Orders.Services.Interfaces;
+using Orders.BusinessLogic.Services.Interfaces;
 using System.Threading.Tasks;
 
 namespace Orders.ApiControllers

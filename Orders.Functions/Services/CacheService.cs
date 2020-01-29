@@ -11,6 +11,7 @@ namespace Orders.Functions.Services
 
         public CacheService(IOptions<CacheOptions> tableStorageOptions)
         {
+            //to create cache connection provider
             _cache = ConnectionMultiplexer.Connect(tableStorageOptions.Value.ConnectionString).GetDatabase();
         }
 

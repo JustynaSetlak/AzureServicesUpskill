@@ -7,12 +7,15 @@
   <ItemGroup>
     <PackageReference Include="AutoMapper" Version="9.0.0" />
     <PackageReference Include="Microsoft.AspNetCore.Http.Features" Version="2.2.0" />
+    <PackageReference Include="Microsoft.Extensions.Caching.Redis" Version="2.2.0" />
     <PackageReference Include="Microsoft.Spatial" Version="7.5.3" />
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Orders.DataAccess\Orders.DataAccess.csproj" />
+    <ProjectReference Include="..\Orders.DocumentDataAccess\Orders.DocumentDataAccess.csproj" />
     <ProjectReference Include="..\Orders.Events\Orders.EventHandler.csproj" />
+    <ProjectReference Include="..\Orders.Storage\Orders.Storage.csproj" />
+    <ProjectReference Include="..\Orders.TableStorage\Orders.TableStorage.csproj" />
   </ItemGroup>
 
 </Project>

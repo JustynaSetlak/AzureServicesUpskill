@@ -5,6 +5,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="Autofac" Version="4.9.4" />
     <PackageReference Include="AutoMapper" Version="9.0.0" />
     <PackageReference Include="Microsoft.Azure.Search" Version="10.1.0" />
     <PackageReference Include="Microsoft.Extensions.Options" Version="2.2.0" />
@@ -13,7 +14,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Orders.Common\Orders.Common.csproj" />
-    <ProjectReference Include="..\Orders.DataAccess\Orders.DataAccess.csproj" />
+    <ProjectReference Include="..\Orders.Infrastructure\Orders.Infrastructure.csproj" />
   </ItemGroup>
 
 </Project>

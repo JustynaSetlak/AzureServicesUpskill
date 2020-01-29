@@ -12,8 +12,8 @@
 
         public bool IsPriceSortingAscending { get; set; }
 
-        public int? PageNumber { get; set; } = Constants.INITIAL_PAGE_NUMBER;
+        public int? PageNumber { get; set; } = Constants.Constants.INITIAL_PAGE_NUMBER;
 
-        public int? NumberOfElementsOnPage { get; set; } = Constants.DEFAULT_NUMBER_OF_ELEMENTS_ON_PAGE;
+        public int? NumberOfElementsOnPage { get; set; } = Constants.Constants.DEFAULT_NUMBER_OF_ELEMENTS_ON_PAGE;
     }
 }

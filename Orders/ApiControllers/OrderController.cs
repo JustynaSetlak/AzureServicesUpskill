@@ -2,7 +2,7 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Orders.BusinessLogic.Dtos.Order;
-using Orders.Services.Interfaces;
+using Orders.BusinessLogic.Services.Interfaces;
 
 namespace Orders.ApiControllers
 {

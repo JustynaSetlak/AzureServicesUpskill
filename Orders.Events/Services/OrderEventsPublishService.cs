@@ -1,9 +1,9 @@
 ﻿using Microsoft.Azure.EventGrid;
 using Microsoft.Azure.EventGrid.Models;
 using Microsoft.Extensions.Options;
-using Orders.Common.Config;
 using Orders.EventHandler.Events;
 using Orders.EventHandler.Interfaces;
+using Orders.EventHandler.Options;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;

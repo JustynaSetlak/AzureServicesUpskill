@@ -5,12 +5,10 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Orders.BusinessLogic.Hubs;
-using Orders.Common.Config;
+using Orders.BusinessLogic.MappingProfiles;
 using Orders.Configuration;
-using Orders.Configuration.Interfaces;
-using Orders.MappingProfiles;
-using Orders.Search.Interfaces;
+using Orders.Hubs;
+using Orders.Infrastructure.InitConfiguration.Interfaces;
 using Swashbuckle.AspNetCore.Swagger;
 using System;
 
@@ -43,16 +41,18 @@ namespace Orders
                 c.OperationFilter<FileUploadOperationConfig>();
             });
 
-            services.AddAutoMapper(typeof(OrderProfile));
+            //TO DO
+            services.AddAutoMapper(typeof(BusinessLogicMappingProfile));
 
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
             services.AddSignalRService(Configuration);
+            services.AddDistributedMemoryCache();
 
             return services.ConfigureDependencyInjection(Configuration);
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env, IDatabaseConfigurationService databaseConfigurationService, IOrderIndexProvider orderIndexProvider)
+        public void Configure(IApplicationBuilder app, IHostingEnvironment env, IInitConfigurationHandler initConfigurationHandler)
         {
             if (env.IsDevelopment())
             {
@@ -75,8 +75,7 @@ namespace Orders
 
             app.UseCookiePolicy();
 
-            databaseConfigurationService.CreateDatabaseIfNotExist().GetAwaiter().GetResult();
-            orderIndexProvider.Create().GetAwaiter().GetResult();
+            initConfigurationHandler.ConfigureAll().GetAwaiter().GetResult();
 
             app.UseSwagger();
             app.UseSwaggerUI(c =>

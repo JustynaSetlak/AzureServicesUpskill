@@ -6,13 +6,15 @@
 
   <ItemGroup>
     <PackageReference Include="Microsoft.Azure.EventGrid" Version="3.2.0" />
-    <PackageReference Include="Microsoft.Azure.SignalR" Version="1.2.3" />
     <PackageReference Include="Microsoft.Extensions.Options" Version="2.2.0" />
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Orders.Cache\Orders.Cache.csproj" />
     <ProjectReference Include="..\Orders.Common\Orders.Common.csproj" />
+    <ProjectReference Include="..\Orders.Hubs\Orders.Hubs.csproj" />
     <ProjectReference Include="..\Orders.Search\Orders.Search.csproj" />
+    <ProjectReference Include="..\Orders.TableStorage\Orders.TableStorage.csproj" />
   </ItemGroup>
 
 </Project>

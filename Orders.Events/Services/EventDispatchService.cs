@@ -1,5 +1,4 @@
-﻿using Microsoft.Azure.EventGrid;
-using Microsoft.Azure.EventGrid.Models;
+﻿using Microsoft.Azure.EventGrid.Models;
 using Newtonsoft.Json.Linq;
 using Orders.EventHandler.Events;
 using Orders.EventHandler.Handlers;

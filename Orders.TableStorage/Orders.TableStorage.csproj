@@ -1,0 +1,19 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Autofac.Extensions.DependencyInjection" Version="5.0.1" />
+    <PackageReference Include="AutoMapper" Version="9.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Options" Version="2.2.0" />
+    <PackageReference Include="WindowsAzure.Storage" Version="9.3.3" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Orders.Common\Orders.Common.csproj" />
+    <ProjectReference Include="..\Orders.Infrastructure\Orders.Infrastructure.csproj" />
+  </ItemGroup>
+
+</Project>

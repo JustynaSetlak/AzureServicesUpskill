@@ -1,6 +1,6 @@
 ﻿using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Orders.Common.Config;
+using Orders.EventHandler.Options;
 
 namespace Orders.Configuration
 {
