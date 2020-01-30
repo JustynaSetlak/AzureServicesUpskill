@@ -1,15 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Azure.EventGrid;
 using Microsoft.Azure.EventGrid.Models;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
-using Orders.EventHandler.Events;
 using Orders.EventHandler.Interfaces;
 
-namespace Orders.ApiControllers
+namespace Orders.Api.ApiControllers
 {
     [Route("api/search")]
     [ApiController]

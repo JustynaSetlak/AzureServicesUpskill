@@ -1,7 +1,7 @@
 ﻿using Swashbuckle.AspNetCore.Swagger;
 using Swashbuckle.AspNetCore.SwaggerGen;
 
-namespace Orders.Configuration
+namespace Orders.Api.Configuration
 {
     public class FileUploadOperationConfig : IOperationFilter
     {

@@ -7,11 +7,13 @@ using Orders.BusinessLogic.DependencyModules;
 using Orders.BusinessLogic.Services.Interfaces;
 using Orders.DocumentDataAccess.DependencyModules;
 using Orders.DocumentDataAccess.Options;
+using Orders.EventHandler.DependencyModules;
 using Orders.EventHandler.Handlers;
 using Orders.EventHandler.Interfaces;
 using Orders.EventHandler.Providers;
 using Orders.EventHandler.Services;
 using Orders.HostedServices;
+using Orders.Infrastructure.DependencyModules;
 using Orders.Search.DependencyModules;
 using Orders.Search.Interfaces;
 using Orders.Search.Providers;
@@ -19,7 +21,7 @@ using Orders.Search.Services.Interfaces;
 using Orders.Storage.DependencyModules;
 using Orders.TableStorage.DependencyModules;
 
-namespace Orders.Configuration
+namespace Orders.Api.Configuration
 {
     public static class DependencyInjectionConfig
     {
@@ -29,28 +31,16 @@ namespace Orders.Configuration
 
             builder.RegisterModule<StorageDependencyModule>();
             builder.RegisterModule<TableStorageDependencyModule>();
-            builder.RegisterType<SearchDependencyModule>();
-            builder.RegisterType<BusinessLogicDependencyModule>();
+            builder.RegisterModule<SearchDependencyModule>();
+            builder.RegisterModule<BusinessLogicDependencyModule>();
+            builder.RegisterModule<InfrastructureDependencyModule>();
+            builder.RegisterModule<EventDependencyModule>();
 
             var ordersDatabaseConfig = configuration.GetSection(nameof(OrdersDatabaseConfig)).Get<OrdersDatabaseConfig>();
             builder.RegisterModule(new DocumentDataAccessDependencyModule(ordersDatabaseConfig));
 
-            RegisterEventServices(builder);
-
             builder.Populate(services);
-            return new AutofacServiceProvider(builder.Build());            
-        }
-
-        private static void RegisterEventServices(ContainerBuilder builder)
-        {
-            builder.RegisterType<OrderEventsPublishService>().As<IOrderEventsPublishService>();
-            builder.RegisterType<EventGridClientProvider>().As<IEventGridClientProvider>();
-            builder.RegisterType<EventDispatchService>().As<IEventDispatchService>();
-
-            builder
-                .RegisterAssemblyTypes(typeof(IEventHandler<>).Assembly)
-                .AsImplementedInterfaces()
-                .InstancePerLifetimeScope();
+            return new AutofacServiceProvider(builder.Build());
         }
     }
 }

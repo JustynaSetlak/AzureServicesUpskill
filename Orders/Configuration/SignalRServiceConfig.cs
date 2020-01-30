@@ -2,7 +2,7 @@
 using Microsoft.Extensions.DependencyInjection;
 using Orders.EventHandler.Options;
 
-namespace Orders.Configuration
+namespace Orders.Api.Configuration
 {
     public static class SignalRServiceConfig
     {

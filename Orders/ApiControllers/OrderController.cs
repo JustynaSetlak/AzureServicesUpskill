@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using Orders.BusinessLogic.Dtos.Order;
 using Orders.BusinessLogic.Services.Interfaces;
 
-namespace Orders.ApiControllers
+namespace Orders.Api.ApiControllers
 {
     [Route("api/order")]
     [ApiController]
@@ -74,6 +74,5 @@ namespace Orders.ApiControllers
 
             return Accepted();
         }
-
     }
 }

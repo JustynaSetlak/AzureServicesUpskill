@@ -58,34 +58,37 @@ namespace Orders.EventHandler.Handlers
                 searchModel.Category = categoryRetrieveResult.Value.Name;
             }
 
-            searchModel.Tags = new List<string>();
+            searchModel.Tags = await GetTagNames(newOrderCreated.TagIds);
+
+            return searchModel;
+        }
+
+        private async Task<List<string>> GetTagNames(List<string> tagIds)
+        {
+            var tags = new List<string>();
 
             var cachedData = await _cacheService.GetValue<List<TagDto>>("tags");
-            if(cachedData != null)
+            if (cachedData != null)
             {
                 var orderTags = cachedData
-                    .Where(t => newOrderCreated.TagIds.Contains(t.RowKey))
+                    .Where(t => tagIds.Contains(t.RowKey))
                     .Select(t => t.Name)
                     .ToList();
 
-                searchModel.Tags = orderTags;
+                tags = orderTags;
             }
-             
-            foreach (var tagId in newOrderCreated.TagIds)
+
+            foreach (var tagId in tagIds)
             {
                 var tagRetrieveResult = await _tagRepository.Get(tagId);
 
                 if (tagRetrieveResult.IsSuccessfull && tagRetrieveResult.Value != null)
                 {
-                    searchModel.Tags.Add(tagRetrieveResult.Value.Name);
+                    tags.Add(tagRetrieveResult.Value.Name);
                 }
-            // ReadThroughCache<T>(string key, Fun<Task<T>> getter) {
-            //    Mam w caszu?
-            //      tak - zwroc
-            //      nie - pobierz, skaszuj, zwróc
             }
 
-            return searchModel;
+            return tags;
         }
     }
 }

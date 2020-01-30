@@ -3,7 +3,7 @@ using Orders.BusinessLogic.Dtos.Category;
 using Orders.BusinessLogic.Services.Interfaces;
 using System.Threading.Tasks;
 
-namespace Orders.ApiControllers
+namespace Orders.Api.ApiControllers
 {
     [Route("/api/category")]
     [ApiController]

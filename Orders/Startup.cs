@@ -5,8 +5,8 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Orders.Api.Configuration;
 using Orders.BusinessLogic.MappingProfiles;
-using Orders.Configuration;
 using Orders.Hubs;
 using Orders.Infrastructure.InitConfiguration.Interfaces;
 using Swashbuckle.AspNetCore.Swagger;
@@ -33,6 +33,7 @@ namespace Orders
                 options.MinimumSameSitePolicy = SameSiteMode.None;
             });
 
+            services.AddMapping();
             services.ConfigureOptions(Configuration);
 
             services.AddSwaggerGen(c =>
@@ -40,9 +41,6 @@ namespace Orders
                 c.SwaggerDoc("v1", new Info { Title = "My API", Version = "v1" });
                 c.OperationFilter<FileUploadOperationConfig>();
             });
-
-            //TO DO
-            services.AddAutoMapper(typeof(BusinessLogicMappingProfile));
 
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
             services.AddSignalRService(Configuration);
